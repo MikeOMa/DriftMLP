@@ -2,7 +2,7 @@ from h3 import h3
 from DriftMLP.rotations import random_ll_rot
 from DriftMLP.plotting import h3_plotly
 import networkx as nx
-
+import numpy as np
 
 def return_h3_inds(loc_list, rot=None):
     if rot is None:
@@ -34,11 +34,12 @@ class single_SP:
         if rev:
             m = plot_path(self.sp_rev, color='red', folium_map=m)
         return m
-    def expected_days(self, network, rev=True):
+
+    def expected_days(self, network, day_cut_off=5, rev=True):
         if rev:
-            path = sp.sp_rev
+            path = self.sp_rev
         else:
-            path = sp.sp
+            path = self.sp
         Expected_days = []
         if len(path) == 0:
             return [np.nan]
