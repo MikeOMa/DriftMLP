@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: driftmlp
+Version: 0.2
+Summary: A set of tools for data extraction from the GDP database and estimating travel times
+Home-page: https://github.com/MikeOMa/DriftMLP
+Author: Mike O'Malley
+Author-email: m.omalley2@lancaster.ac.uk
+License: UNKNOWN
+Description: # pydrifters
+        
+        This package contains tools for implementing the methodology associated with the paper [Estimating the travel time and the most likely path from Lagrangian drifters](https://arxiv.org/abs/2002.07774)
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3.6
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
