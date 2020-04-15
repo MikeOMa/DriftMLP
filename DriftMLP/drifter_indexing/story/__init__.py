@@ -19,7 +19,7 @@ def grid_story(traj_pos):
             in_grid_id = h3.geo_to_h3(lng=lng, lat=lat, res=3)
             story.append(in_grid_id)
         else:
-            story.append(-1)
+            story.append('0')
     return story
 
 
