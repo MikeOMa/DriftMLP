@@ -8,7 +8,7 @@ chardet==3.0.4
 cycler==0.10.0
 decorator==4.4.2
 defusedxml==0.6.0
--e git+git@github.com:MikeOMa/DriftMLP.git@edd1d30603428fa47e36538f55d448c1a9f1b7ea#egg=driftmlp
+-e git+git@github.com:MikeOMa/DriftMLP.git@c42dd969634606cfdc9b87f76c75409965a198ac#egg=driftmlp
 entrypoints==0.3
 folium==0.10.1
 h3==3.4.3
@@ -65,3 +65,4 @@ wcwidth==0.1.9
 webencodings==0.5.1
 widgetsnbextension==3.5.1
 zipp==3.1.0
+cartopy==0.17.0
