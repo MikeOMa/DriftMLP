@@ -1,15 +1,17 @@
-from h3 import h3
-from DriftMLP.rotations import random_ll_rot
-from DriftMLP.plotting import h3_plotly
+import h3.api.basic_int as h3
 import networkx as nx
 import numpy as np
+
+from DriftMLP.plotting import h3_plotly
+from DriftMLP.rotations import random_ll_rot
+
 
 def return_h3_inds(loc_list, rot=None):
     if rot is None:
         rot = random_ll_rot(identity=True)
 
     locs_rotated = [rot(lon=loc[0], lat=loc[1]) for loc in loc_list]
-    return [h3.geo_to_h3(lng=loc[0], lat=loc[1], res=3)
+    return [h3.geo_to_h3(lng=loc[0], lat=loc[1], resolution=3)
             for loc in locs_rotated]
 
 
@@ -41,6 +43,7 @@ class single_SP:
         self.orig = orig
         self.dest = dest
         self.h3_inds = return_h3_inds([orig, dest])
+        print(f'{self.h3_inds}')
         self.sp = nx.shortest_path(network, self.h3_inds[0],
                                    self.h3_inds[1], weight=weight)
         self.sp_rev = nx.shortest_path(network,

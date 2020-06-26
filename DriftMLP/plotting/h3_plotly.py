@@ -1,6 +1,7 @@
-from .shape_helpers import split_polys
 import folium
-from h3 import h3
+import h3
+
+from .shape_helpers import split_polys
 
 
 def visualize_hexagons(hexagons, color="red", folium_map=None, weight=8, fix=True):

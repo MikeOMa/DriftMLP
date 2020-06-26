@@ -1,5 +1,6 @@
 from time import time
-from h3 import h3
+
+import h3.api.basic_int as h3
 
 
 def grid_story(traj_pos):
@@ -16,10 +17,10 @@ def grid_story(traj_pos):
         lng, lat = point
         # is lng is nan add index else add -1
         if isinstance(lng, float):
-            in_grid_id = h3.geo_to_h3(lng=lng, lat=lat, res=3)
+            in_grid_id = h3.geo_to_h3(lng=lng, lat=lat, resolution=3)
             story.append(in_grid_id)
         else:
-            story.append('0')
+            story.append(-1)
     return story
 
 
