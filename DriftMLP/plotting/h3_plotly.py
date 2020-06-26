@@ -1,5 +1,5 @@
 import folium
-import h3
+import h3.api.basic_int as h3
 
 from .shape_helpers import split_polys
 

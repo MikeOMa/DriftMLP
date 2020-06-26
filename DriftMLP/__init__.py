@@ -1,13 +1,12 @@
-from DriftMLP.drifter_indexing import driftiter
-from DriftMLP.drifter_indexing import story
+import igraph
+
 from DriftMLP import form_network
 from DriftMLP import shortest_path
-import typing
-from typing import overload
-import networkx as nx
+from DriftMLP.drifter_indexing import driftiter
+from DriftMLP.drifter_indexing import story
 
 
-def file_to_network(driftfile, drift_kwargs=None, day_cut_off=5, silent=False):
+def file_to_network(driftfile, drift_kwargs=None, day_cut_off=5, silent=False) -> igraph.Graph:
     if drift_kwargs is None:
         drift_kwargs = {'variables': ['position', 'drogue', 'datetime'],
                         'drop_na': False,
@@ -21,10 +20,10 @@ def file_to_network(driftfile, drift_kwargs=None, day_cut_off=5, silent=False):
     return net
 
 
-def network_from_file(fname, **kwargs) -> nx.DiGraph:
+def network_from_file(fname, **kwargs) -> igraph.Graph:
     name, postfix = fname.split('.')
     if postfix == 'gml':
-        net = nx.read_gml(fname)
+        net = igraph.igraph_read_graph_graphml(fname)
     elif postfix == 'h5':
         print('Creating network from drifter data')
         net = file_to_network(fname, **kwargs)

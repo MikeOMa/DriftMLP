@@ -1,22 +1,19 @@
+import math
+from math import sin, cos
 
 import numpy as np
-import math
-from numba import jit
-from math import sin, asin, sqrt, radians, cos, atan2, degrees
 from scipy.spatial.transform import Rotation as R
 
 
-@jit
 def ll_to_xyz(lon, lat):
     lon_rad = math.radians(lon)
     lat_rad = math.radians(lat)
-    x = cos(lon_rad)*cos(lat_rad)
-    y = sin(lon_rad)*cos(lat_rad)
+    x = cos(lon_rad) * cos(lat_rad)
+    y = sin(lon_rad) * cos(lat_rad)
     z = sin(lat_rad)
     return [x, y, z]
 
 
-@jit
 def xyz_to_ll(x, y, z):
     lat_rad = math.asin(z)
     lon_rad = math.atan2(y, x)
