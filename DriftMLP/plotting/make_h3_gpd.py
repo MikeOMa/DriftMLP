@@ -2,8 +2,9 @@ import geopandas as gpd
 import h3.api.basic_int as h3
 import igraph
 import numpy as np
-import pydrifters.grid.shape_helpers as shp_help
 from shapely.geometry import Point
+
+import DriftMLP.plotting.shape_helpers as shp_help
 
 
 def network_to_multipolygon_df(network: igraph.Graph):
