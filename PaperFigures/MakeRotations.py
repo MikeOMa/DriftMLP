@@ -5,7 +5,7 @@ from multiprocessing import Pool
 import DriftMLP
 from DriftMLP.rotations import random_ll_rot
 
-rotations = [random_ll_rot() for i in range(100)]  #
+rotations = [random_ll_rot() for i in range(10)]  #
 file = os.environ['DRIFTFILE']
 
 
@@ -20,5 +20,5 @@ def get_network(rot):
 
 p = Pool(19)
 to_store = list(p.map(get_network, rotations))
-pickle.dump(open(f'rotations_{len(rotations)}.p', 'wb'))
+pickle.dump(to_store, open(f'rotations_{len(rotations)}.p', 'wb'))
 p.close()
