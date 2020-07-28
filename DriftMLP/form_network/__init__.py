@@ -121,5 +121,6 @@ def make_transition(list_of_h3_stories: List[List[int]], day_cut_off: int = 5, o
     ###Convert pandas to a igraph network
     ###Credit to https://stackoverflow.com/questions/44400345/create-igraph-graph-from-pandas-dataframe/51901291
     net = pandas_to_igraph(pd_edgelist, pd_vertex_attr)
-
+    net['day_cut_off'] = day_cut_off
+    net['observations_per_day'] = observations_per_day
     return net
