@@ -1,4 +1,5 @@
 import os
+import pickle
 from multiprocessing import Pool
 
 import DriftMLP
@@ -17,10 +18,7 @@ def get_network(rot):
     return net
 
 
-net = get_network(rotations[0])
-import pickle
-
 p = Pool(19)
 to_store = list(p.map(get_network, rotations))
-pickle.dump(open('test.p', 'wb'))
+pickle.dump(open(f'rotations_{len(rotations)}.p', 'wb'))
 p.close()
