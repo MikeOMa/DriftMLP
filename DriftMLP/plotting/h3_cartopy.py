@@ -158,7 +158,7 @@ def plot_line(h3_gpd, h3_inds, centroid_col=None, ax=None, bounds=None, fig_init
     return fig, ax
 
 
-def plot_gpd_points(dat, ax, crs, fl=True, **kwargs):
+def plot_gpd_points(dat, ax, crs, fl=False, **kwargs):
     xy = dat.apply(lambda x: x.xy)
     x = xy.apply(lambda x: float(x[0][0])).to_list()
     y = xy.apply(lambda x: float(x[1][0])).to_list()

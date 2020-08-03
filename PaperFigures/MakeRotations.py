@@ -18,7 +18,7 @@ def get_network(rot):
     return net
 
 
-p = Pool(19)
+p = Pool(4)
 to_store = list(p.map(get_network, rotations))
 pickle.dump(to_store, open(f'rotations_{len(rotations)}.p', 'wb'))
 p.close()

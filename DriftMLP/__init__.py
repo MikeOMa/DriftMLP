@@ -1,4 +1,5 @@
 import igraph
+import numpy as np
 
 from DriftMLP import form_network
 from DriftMLP import shortest_path
@@ -8,7 +9,7 @@ from DriftMLP.rotations import random_ll_rot
 from .plotting.make_h3_gpd import network_to_multipolygon_df
 
 
-def file_to_network(driftfile, drift_kwargs=None, day_cut_off=5, silent=False) -> igraph.Graph:
+def file_to_network(driftfile, drift_kwargs=None, day_cut_off=5, silent=False, store_story=False) -> igraph.Graph:
     if drift_kwargs is None:
         drift_kwargs = {'variables': ['position', 'drogue', 'datetime'],
                         'drop_na': False,
@@ -21,8 +22,25 @@ def file_to_network(driftfile, drift_kwargs=None, day_cut_off=5, silent=False) -
     net = form_network.make_transition(h3_stories, day_cut_off=day_cut_off, observations_per_day=4)
     if 'lon_lat_transform' in drift_kwargs.keys():
         net['rotation'] = drift_kwargs['lon_lat_transform']
+    if store_story:
+        ## This is memory intensive hence why it is off by default!
+        net['stories'] = h3_stories
 
     return net
+
+
+def BootstrapNetwork(network: igraph.Graph, visual=False):
+    assert 'stories' in network.attributes(), ValueError(
+        'set store_story=True in file to network. Needed for bootstrap network')
+    n_drift = len(network['stories'])
+    boot_ids = np.random.randint(low=0, high=n_drift, size=n_drift, dtype=int).tolist()
+    stories_bootstrap = [network['stories'][i] for i in boot_ids]
+    boot_net = form_network.make_transition(stories_bootstrap, day_cut_off=network['day_cut_off'],
+                                            observations_per_day=network['observations_per_day'])
+    boot_net['rotation'] = network['rotation']
+    if 'gpd' in network.attributes() and visual:
+        boot_net['gpd'] = network['gpd']
+    return boot_net
 
 
 def network_from_file(fname, visual=True, **kwargs) -> igraph.Graph:
@@ -45,4 +63,4 @@ class MLP:
         self.net = network_from_file(fname)
 
     def get_mlpath(self, lon, lat):
-        return shortest_path.single_SP(self.net, lon, lat)
+        return shortest_path.SingleSP(self.net, lon, lat)

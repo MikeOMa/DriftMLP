@@ -29,6 +29,10 @@ def add_story_to_lists(story: List[int], list_of_counters: List[Counter], day_cu
 
     """
     break_in_obs = day_cut_off * observations_per_day
+    if not isinstance(break_in_obs, int):
+        assert np.floor(break_in_obs) == break_in_obs
+        break_in_obs = int(np.floor(break_in_obs))
+
     for i in range(0, len(story) - break_in_obs):
         if story[i] != -1 and story[i + break_in_obs] != -1:
             list_of_counters[story[i]][story[i + break_in_obs]] += 1

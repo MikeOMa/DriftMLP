@@ -1,16 +1,17 @@
 from typing import Dict
 
+import h3.api.basic_int as h3
 import igraph
 import numpy as np
 
 ## Dict with points on the panama canal and strait of gibraltar
 ## Can be used to remove these undesired points
 RM_DICT = {'panama':
-               [[9.071323224898283, -79.69761240838052],
-                [8.661515581046203, -80.7277450395157]],
+               [[-79.69761240838052, 9.071323224898283],
+                [-80.7277450395157, 8.661515581046203]],
            'straitofgibraltar':
-               [[35.9945, -5.5999],
-                [35.8804, -5.6149]]}
+               [[-5.5999, 35.9945],
+                [-5.6149, 35.8804]]}
 
 ## Add points to link the strait of gibraltar after removing.
 ## The first point is on the west, second point on the east.
@@ -79,8 +80,7 @@ def check_any_grid(array, grid):
 def return_h3_inds(loc_list, rot=None):
     if rot is None:
         rot = random_ll_rot(identity=True)
-
-    locs_rotated = [rot(lon=loc[0], lat=loc[1]) for loc in loc_list]
+    locs_rotated = [rot(loc[0], loc[1]) for loc in loc_list]
     return [h3.geo_to_h3(lng=loc[0], lat=loc[1], resolution=3)
             for loc in locs_rotated]
 
@@ -91,16 +91,16 @@ def remove_undesired(network: igraph.Graph, dict_rm: Dict = RM_DICT, rot=None, s
             print(f'Removing {key} from the graph.')
 
         drop_inds = return_h3_inds(dict_rm[key], rot=rot)
-        drop_vid = [v.index for v in G.vs if v['name'] in drop_inds]
-        if len(drop_inds > 0):
-            network.delete_verices(drop_vid)
+        drop_vid = [v.index for v in network.vs if v['name'] in drop_inds]
+        if len(drop_inds) > 0:
+            network.delete_vertices(drop_vid)
         else:
             if not silent:
                 print(f'for {key} , {dict_rm[key]} not in graph so it is not dropped')
 
 
 def get_prob_stay(network, node_id: int):
-    stay_edges = network.select(_source=node_id, _target=node_id)
+    stay_edges = network.es.select(_source=node_id, _target=node_id)
     if len(stay_edges) == 0:
         ##if the edge doesn't exist this probability is zero
         prob_stay = 0
