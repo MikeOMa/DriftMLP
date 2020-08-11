@@ -16,11 +16,11 @@ RM_DICT = {'panama':
 ## Add points to link the strait of gibraltar after removing.
 ## The first point is on the west, second point on the east.
 ADD_DICT = {'straitofgibraltar':
-                [[35.954, -7.2],  ## West point
-                 [36.0026, -4.0]]  ## East point
+                [[-7.2, 35.954],  ## West point
+                 [-4.0, 36.0026]]  ## East point
             }
-TIME_GAP = {'straitofigibraltar':
-                [1, 100]}  ## 1 for west to east, 100 for east to west
+TIME_GAP = {'straitofgibraltar':
+                [6 * 365, 100 * 365]}  ## 1 for west to east, 100 for east to west
 
 from DriftMLP.rotations import random_ll_rot
 
@@ -110,7 +110,7 @@ def get_prob_stay(network, node_id: int):
 
 
 def traveltime_to_probleave(travel_time, prob_stay, day_cut_off):
-    return (travel_time - day_cut_off) * prob_stay
+    return 1 / ((travel_time / day_cut_off) - 1) * prob_stay
 
 
 def add_link(network: igraph.Graph, dict_add: Dict = ADD_DICT, add_gap=TIME_GAP, rot=None, silent=True):
@@ -126,17 +126,16 @@ def add_link(network: igraph.Graph, dict_add: Dict = ADD_DICT, add_gap=TIME_GAP,
         inds = return_h3_inds(dict_add[key], rot=rot)
 
         ##check that the connection we are adding is in the graph.
-        in_graph_bools = [ind in network.es['name'] for ind in inds]
+        in_graph_bools = [ind in network.vs['name'] for ind in inds]
         if all(in_graph_bools):
             west_node = network.vs.select(name=inds[0])[0].index
             east_node = network.vs.select(name=inds[1])[0].index
 
             stay_west = get_prob_stay(network, west_node)
             stay_east = get_prob_stay(network, east_node)
-
-            going_east_prob = traveltime_to_probleave(add_gap[0], stay_west, network['day_cut_off'])
-            going_west_prob = traveltime_to_probleave(add_gap[1], stay_east, network['day_cut_off'])
-
+            print(add_gap[key])
+            going_east_prob = traveltime_to_probleave(add_gap[key][0], stay_west, network['day_cut_off'])
+            going_west_prob = traveltime_to_probleave(add_gap[key][1], stay_east, network['day_cut_off'])
             # Lets add the desired connection.
             # N=-1 to help easily find these edges in future to see they are artificial.
             network.add_edge(west_node, east_node, prob=going_east_prob, neglogprob=-np.log(going_east_prob), N=-1)

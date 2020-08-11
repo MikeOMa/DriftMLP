@@ -1,6 +1,12 @@
 README.md
 setup.py
+DriftMLP/__init__.py
+DriftMLP/helpers.py
+DriftMLP/form_network/__init__.py
+DriftMLP/rotations/__init__.py
+DriftMLP/shortest_path/__init__.py
 driftmlp.egg-info/PKG-INFO
 driftmlp.egg-info/SOURCES.txt
 driftmlp.egg-info/dependency_links.txt
+driftmlp.egg-info/requires.txt
 driftmlp.egg-info/top_level.txt

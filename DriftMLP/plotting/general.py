@@ -1,6 +1,8 @@
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import pandas as pd
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
 
 def plot_stations(stations_data, crs=None, names=-1,
@@ -35,3 +37,16 @@ def plot_stations(stations_data, crs=None, names=-1,
                     fontweight='bold', zorder=11).set_clip_on(True)
     ax.coastlines()
     return ax
+
+
+def add_standard_gridlines(ax, x_locs=[-180, -45, 0, 45, 180],
+                           y_locs=list(range(-80, 80, 10))):
+    gl = ax.gridlines(draw_labels=True)
+    gl.top_labels = False
+    gl.left_labels = False
+    gl.xlines = False
+    gl.xlocator = mticker.FixedLocator(x_locs)
+    gl.ylocator = mticker.FixedLocator(y_locs)
+    gl.xformatter = LONGITUDE_FORMATTER
+    gl.yformatter = LATITUDE_FORMATTER
+    return gl
