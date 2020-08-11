@@ -10,7 +10,7 @@ def lng180_to_360(list_of_coords: List) -> List:
 
 
 def lng360_to_180(list_of_coords):
-    att = [[i[0]-360, i[1]] if i[0] > 180 else i for i in list_of_coords]
+    att = [[i[0] - 360, i[1]] if i[0] > 180 else i for i in list_of_coords]
     neg = [i[0] < 0 for i in att]
     if any(neg):
         return [[-180, i[1]] if i[0] == 180 else i for i in att]

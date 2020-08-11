@@ -27,7 +27,8 @@ setuptools.setup(
     packages=['DriftMLP', 'DriftMLP.shortest_path', 'DriftMLP.form_network',
               'DriftMLP.rotations', 'DriftMLP.plotting', 'DriftMLP.drifter_indexing',
               'DriftMLP.drifter_indexing.driftiter',
-              'DriftMLP.drifter_indexing.story'],
+              'DriftMLP.drifter_indexing.story',
+              'DriftMLP.drifter_indexing.makehdf5'],
     classifiers=[
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
