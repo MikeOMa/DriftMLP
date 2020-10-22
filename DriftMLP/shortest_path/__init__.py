@@ -5,8 +5,9 @@ import igraph
 import matplotlib.pyplot as plt
 import numpy as np
 
-from DriftMLP.helpers import return_h3_inds, get_prob_stay
-from DriftMLP.plotting import h3_plotly, h3_cartopy, make_h3_gpd
+from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
+from DriftMLP.helpers import get_prob_stay
+from DriftMLP.plotting import h3_plotly, h3_cartopy, make_gpd
 
 
 def plot_path(h3_seq, **kwargs):
@@ -14,7 +15,8 @@ def plot_path(h3_seq, **kwargs):
     return m
 
 
-def sp_igraph(network: igraph.Graph, name_from: int, name_to: int, weight='neglogprob') -> List[int]:
+def sp_igraph(network: igraph.Graph, name_from: int = None, name_to: int = None, weight='neglogprob',
+              node_fromto=None) -> List[int]:
     """
 
     Parameters
@@ -29,8 +31,11 @@ def sp_igraph(network: igraph.Graph, name_from: int, name_to: int, weight='neglo
     sp : List[int]
 
     """
-    node_from = network.vs.select(name=name_from)[0]
-    node_to = network.vs.select(name=name_to)[0]
+    if node_fromto is None:
+        node_from = network.vs.select(name=name_from)[0]
+        node_to = network.vs.select(name=name_to)[0]
+    else:
+        node_from, node_to = node_fromto
 
     all_sp = network.get_shortest_paths(node_from, node_to, weights=weight)
     ##convert to integer
@@ -42,6 +47,7 @@ def travel_time(network, source_id, target_id):
     # CHANGE: Potentially to network.es.find(_source=, _target=)
 
     # Must exist as it is on the shortest path
+
     eid = network.get_eid(source_id, target_id)
     prob_leave = network.es[eid]['prob']
     prob_stay = get_prob_stay(network, source_id)
@@ -61,7 +67,6 @@ def get_all_paths(network, src, dest_list):
     to_nodes = [vert_seq[0].index
                 for _bool, vert_seq in zip(mask_node_in_graph, to_vertex_seqs)
                 if _bool]
-
     sps = network.get_shortest_paths(from_node, to_nodes, weights='neglogprob')
     results_list = []
     dest_node_list = []
@@ -120,14 +125,13 @@ class network_path:
             self.dest_net = network.vs(name=dest)[0].index
         except IndexError:
             self.dest_net = -1
+
         self.day_cut_off = network['day_cut_off']
-        if dest == -1:
-            ## if node not in graph
+        if self.dest_net == -1 or self.src_net == -1:
             self.all_sps = [np.nan]
             self.nid = [np.nan]
-
         elif path is None:
-            self.all_sps = sp_igraph(network, src, dest, **kwargs)
+            self.all_sps = sp_igraph(network, node_fromto=[self.src_net, self.dest_net], **kwargs)
             if len(self.all_sps) > 1:
                 warnings.warn(f'more than one SP for source node {src}, {dest}')
             self.nid = self.all_sps[-1]
@@ -141,6 +145,17 @@ class network_path:
         self.travel_time_list = self.expected_days(network)
         self.travel_time = sum(self.travel_time_list)
         self.titlestring = f'Path from {src} to {dest}'
+
+    def update_nid(self, network):
+        """
+        Changes self.nid to match the new network. Useful if a different network with the same nodes is being used.
+        Parameters
+        ----------
+        network: nx.Graph
+        """
+        self.backup_ind = self.nid.copy()
+        self.nid = [network.vs.select(name=ind)[0].index for ind in self.h3id]
+
     def expected_days(self, network: igraph.Graph) -> List[float]:
         """
 
@@ -168,11 +183,12 @@ class network_path:
 
 
 class SingleSP:
-    def __init__(self, network, orig, dest, weight='neglogprob', rot=None):
+    def __init__(self, network, orig, dest, weight='neglogprob', discretizer=DefaultSystem):
         self.orig = orig
         self.dest = dest
-        self.h3_inds = return_h3_inds([orig, dest], rot)
+        self.h3_inds = discretizer.return_inds([orig, dest])
         self.FromNetwork(network, weight)
+        self.discretizer = discretizer
 
     def FromNetwork(self, network, weight):
         self.sp = network_path(network, self.h3_inds[0], self.h3_inds[1], weight=weight)
@@ -203,7 +219,7 @@ class SingleSP:
         """
         if gpd_df is None:
             all_ids = self.sp.h3id + self.sp_rev.h3id
-            gpd_df = make_h3_gpd.list_to_multipolygon_df(all_ids)
+            gpd_df = make_gpd.list_to_multipolygon_df(all_ids, self.discretizer)
 
         ax = h3_cartopy.plot_hex(gpd_df, self.sp.h3id, ax=ax, color=color, **kwargs)
         if rev:

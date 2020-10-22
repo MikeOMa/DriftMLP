@@ -1,8 +1,9 @@
 from typing import Dict
 
-import h3.api.basic_int as h3
 import igraph
 import numpy as np
+
+from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
 
 ## Dict with points on the panama canal and strait of gibraltar
 ## Can be used to remove these undesired points
@@ -21,8 +22,6 @@ ADD_DICT = {'straitofgibraltar':
             }
 TIME_GAP = {'straitofgibraltar':
                 [6 * 365, 100 * 365]}  ## 1 for west to east, 100 for east to west
-
-from DriftMLP.rotations import random_ll_rot
 
 
 def change_360_to_ew(lon_arr):
@@ -77,20 +76,12 @@ def check_any_grid(array, grid):
     return (any(mask4 & new_mask))
 
 
-def return_h3_inds(loc_list, rot=None):
-    if rot is None:
-        rot = random_ll_rot(identity=True)
-    locs_rotated = [rot(loc[0], loc[1]) for loc in loc_list]
-    return [h3.geo_to_h3(lng=loc[0], lat=loc[1], resolution=3)
-            for loc in locs_rotated]
-
-
-def remove_undesired(network: igraph.Graph, dict_rm: Dict = RM_DICT, rot=None, silent=True):
+def remove_undesired(network: igraph.Graph, dict_rm: Dict = RM_DICT, discretizer=DefaultSystem, rot=None, silent=True):
     for key in dict_rm.keys():
         if not silent:
             print(f'Removing {key} from the graph.')
 
-        drop_inds = return_h3_inds(dict_rm[key], rot=rot)
+        drop_inds = discretizer.return_inds(dict_rm[key], rot=rot)
         drop_vid = [v.index for v in network.vs if v['name'] in drop_inds]
         if len(drop_inds) > 0:
             network.delete_vertices(drop_vid)
@@ -113,7 +104,8 @@ def traveltime_to_probleave(travel_time, prob_stay, day_cut_off):
     return 1 / ((travel_time / day_cut_off) - 1) * prob_stay
 
 
-def add_link(network: igraph.Graph, dict_add: Dict = ADD_DICT, add_gap=TIME_GAP, rot=None, silent=True):
+def add_link(network: igraph.Graph, dict_add: Dict = ADD_DICT, add_gap=TIME_GAP, rot=None, discretizer=DefaultSystem,
+             silent=True):
     for key in dict_add.keys():
         assert len(dict_add[key]) == 2, ValueError(f'Components of dict_add must be lenth 2'
                                                    f'One point for east, one point for west'
@@ -123,7 +115,7 @@ def add_link(network: igraph.Graph, dict_add: Dict = ADD_DICT, add_gap=TIME_GAP,
                        f'Error occured on {key}.')
         if not silent:
             print(f'Adding a link for {key} from the graph.')
-        inds = return_h3_inds(dict_add[key], rot=rot)
+        inds = discretizer.return_inds(dict_add[key], rot=rot)
 
         ##check that the connection we are adding is in the graph.
         in_graph_bools = [ind in network.vs['name'] for ind in inds]

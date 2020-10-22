@@ -1,15 +1,15 @@
 import geopandas as gpd
-import h3.api.basic_int as h3
 import igraph
 import numpy as np
 from shapely.geometry import Point
 
 import DriftMLP.plotting.shape_helpers as shp_help
+from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
 
 
-def network_to_multipolygon_df(network: igraph.Graph):
+def network_to_multipolygon_df(network: igraph.Graph, discretizer=DefaultSystem):
     h3_id = list(network.vs['name'])
-    h3_df = list_to_multipolygon_df(h3_id)
+    h3_df = list_to_multipolygon_df(h3_id, discretizer)
     if 'rotation' in network.attributes():
         h3_df['rotated_centroid'] = h3_df.apply(lambda x: Point(
             network['rotation'](x.centroid_col.x, x.centroid_col.y, inverse=True)), axis=1)
@@ -27,26 +27,30 @@ def full_multipolygon_df(res=3):
     return list_to_multipolygon_df(h3_list)
 
 
-def list_to_multipolygon_df(list_of_h3, split=True):
+def list_to_multipolygon_df(list_of_inds, discretizer=DefaultSystem, split=True):
     """
 
     Parameters
     ----------
     split : object
     """
-    unique_h3 = list(set(list_of_h3))
-    h3_poly = [h3.h3_to_geo_boundary(cod, geo_json=True) for cod in unique_h3]
+    unique_h3 = list(set(list_of_inds))
+    polys = [discretizer.ind_to_boundary(cod) for cod in unique_h3]
     if split:
-        h3_poly = [shp_help.split_polys(poly) for poly in h3_poly]
-    # h3_poly_lon_lat = [Polygon([a[::-1] for a in poly]) for poly in h3_poly]
-    h3_df = gpd.GeoDataFrame(
-        {'geometry': h3_poly},
+        polys = [shp_help.split_polys(poly) for poly in polys]
+    # h3_poly_lon_lat = [Polygon([a[::-1] for a in poly]) for poly in polys]
+    geo_df = gpd.GeoDataFrame(
+        {'geometry': polys},
         crs="EPSG:4326",
         index=unique_h3)
     ##the normal.centroid shapely will not work to give the same as h3.h3_to_geo.
-    h3_df['centroid_col'] = [Point(h3.h3_to_geo(hexa)[::-1])
-                             for hexa in unique_h3]
-    return h3_df
+    if hasattr(discretizer, 'ind_to_geo'):
+        geo_df['centroid_col'] = [Point(discretizer.ind_to_geo(hexa)[::-1])
+                                  for hexa in unique_h3]
+    else:
+        geo_df['centroid_col'] = geo_df.centroid
+
+    return geo_df
 
 
 class network_helpers:
