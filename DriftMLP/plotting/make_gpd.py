@@ -19,10 +19,10 @@ def network_to_multipolygon_df(network: igraph.Graph, discretizer=DefaultSystem)
     return h3_df
 
 
-def full_multipolygon_df(res=3):
+def full_multipolygon_df(discretizer=DefaultSystem):
     coords_lat, coords_lon = np.meshgrid(np.linspace(-90, 90, 500),
                                          np.linspace(-180, 180, 500))
-    h3_list = [h3.geo_to_h3(lng=lon, lat=lat, res=res)
+    h3_list = [discretizer.geo_to_ind(lon=lon, lat=lat)
                for lon, lat in zip(coords_lon.flatten(), coords_lat.flatten())]
     return list_to_multipolygon_df(h3_list)
 
