@@ -40,18 +40,19 @@ class discrete_system:
 
 
 class h3_default(discrete_system):
-    def __init__(self, res=3, rot=None):
+    def __init__(self, res=3, rot=None, h3_api=h3):
         self.res = res
         self.rot = rot
+        self.h3_api = h3_api
 
     def geo_to_ind(self, lon, lat):
-        return h3.geo_to_h3(lng=lon, lat=lat, resolution=self.res)
+        return self.h3_api.geo_to_h3(lng=lon, lat=lat, resolution=self.res)
 
     def ind_to_boundary(self, ind):
-        return h3.h3_to_geo_boundary(ind, geo_json=True)
+        return self.h3_api.h3_to_geo_boundary(ind, geo_json=True)
 
     def ind_to_point(self, ind):
-        return h3.h3_to_geo(ind)
+        return self.h3_api.h3_to_geo(ind)
 
 
 DefaultSystem = h3_default()
