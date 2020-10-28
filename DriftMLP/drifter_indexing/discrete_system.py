@@ -46,7 +46,8 @@ class h3_default(discrete_system):
         self.h3_api = h3_api
 
     def geo_to_ind(self, lon, lat):
-        return self.h3_api.geo_to_h3(lng=lon, lat=lat, resolution=self.res)
+        lon_rot, lat_rot = self.rotate_lon_lat(lon, lat)
+        return self.h3_api.geo_to_h3(lng=lon_rot, lat=lat_rot, resolution=self.res)
 
     def ind_to_boundary(self, ind):
         return self.h3_api.h3_to_geo_boundary(ind, geo_json=True)
