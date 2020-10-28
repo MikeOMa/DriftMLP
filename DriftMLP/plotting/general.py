@@ -6,7 +6,7 @@ from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
 
 def plot_stations(stations_data, crs=None, names=-1,
-                  labelsize='x-large', ax=None,
+                  labelsize='x-large', ax=None, fontweight='bold',
                   **kwargs):
     if crs is None:
         crs = ccrs.PlateCarree()
@@ -34,7 +34,7 @@ def plot_stations(stations_data, crs=None, names=-1,
             ax.text(plot_data[i, 0], plot_data[i, 1],
                     str_names[i],
                     transform=ccrs.Geodetic(), fontsize=labelsize,
-                    fontweight='bold', zorder=11).set_clip_on(True)
+                    fontweight=fontweight, zorder=11).set_clip_on(True)
     ax.coastlines()
     return ax
 

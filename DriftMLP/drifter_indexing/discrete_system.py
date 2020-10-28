@@ -52,7 +52,7 @@ class h3_default(discrete_system):
     def ind_to_boundary(self, ind):
         return self.h3_api.h3_to_geo_boundary(ind, geo_json=True)
 
-    def ind_to_point(self, ind):
+    def ind_to_geo(self, ind):
         return self.h3_api.h3_to_geo(ind)
 
 
