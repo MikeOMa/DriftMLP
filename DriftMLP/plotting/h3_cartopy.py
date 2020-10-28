@@ -99,8 +99,8 @@ def coloredshapes(h3_gpd, h3_inds, color_var, origin=None, ax=None, vmax=None, a
     if ax is None:
         fig, ax = plt.subplots(subplot_kw={'projection': crs})
         x_bound, y_bound = new_df_proj.unary_union.envelope.exterior.coords.xy
-        grid_bounds = extent_box(x_bound, lon=True) + \
-                      extent_box(y_bound, lon=False)
+        grid_bounds = extent_box(x_bound, is_lon=True) + \
+                      extent_box(y_bound, is_lon=False)
         ax.set_extent(grid_bounds, crs=crs)
         ax.gridlines(draw_labels=True)
     else:
@@ -123,7 +123,7 @@ def coloredshapes(h3_gpd, h3_inds, color_var, origin=None, ax=None, vmax=None, a
     return fig, ax
 
 
-def plot_line(h3_gpd, h3_inds, centroid_col=None, ax=None, bounds=None, fig_init=True, **kwargs):
+def plot_line(h3_gpd, h3_inds, centroid_col=None, ax=None, bounds=None, fig_init=False, **kwargs):
     new_df = h3_gpd.loc[h3_inds].copy()
     # new_df.plot(column='probs', legend=True)
     crs = ccrs.PlateCarree()
@@ -138,8 +138,8 @@ def plot_line(h3_gpd, h3_inds, centroid_col=None, ax=None, bounds=None, fig_init
     if fig_init:
         if bounds is None:
             x_bound, y_bound = new_df_proj.unary_union.envelope.exterior.coords.xy
-            grid_bounds = extent_box(x_bound, lon=True) + \
-                          extent_box(y_bound, lon=False)
+            grid_bounds = extent_box(x_bound, is_lon=True) + \
+                          extent_box(y_bound, is_lon=False)
             try:
                 ax.set_extent(grid_bounds, crs=crs)
             except:

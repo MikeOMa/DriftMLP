@@ -200,7 +200,7 @@ class SingleSP:
             m = plot_path(self.sp_rev.h3id, color='red', folium_map=m)
         return m
 
-    def plot_cartopy(self, rev=True, ax=None, gpd_df=None, color='blue', **kwargs):
+    def plot_cartopy(self, rev=True, ax=None, gpd_df=None, color='blue', type_plot='hex', **kwargs):
         """
         Note this function cannot plot rotated paths. Unless type='line'
         Parameters
@@ -220,10 +220,14 @@ class SingleSP:
         if gpd_df is None:
             all_ids = self.sp.h3id + self.sp_rev.h3id
             gpd_df = make_gpd.list_to_multipolygon_df(all_ids, self.discretizer)
-
-        ax = h3_cartopy.plot_hex(gpd_df, self.sp.h3id, ax=ax, color=color, **kwargs)
-        if rev:
-            h3_cartopy.plot_hex(gpd_df, self.sp_rev.h3id, ax=ax, color='red', **kwargs)
+        if type_plot == 'hex':
+            h3_cartopy.plot_hex(gpd_df, self.sp.h3id, ax=ax, color=color, **kwargs)
+            if rev:
+                h3_cartopy.plot_hex(gpd_df, self.sp_rev.h3id, ax=ax, color='red', **kwargs)
+        else:
+            h3_cartopy.plot_line(gpd_df, self.sp.h3id, ax=ax, color=color, **kwargs)
+            if rev:
+                h3_cartopy.plot_hex(gpd_df, self.sp_rev.h3id, ax=ax, color='red', **kwargs)
         ax.coastlines()
         ax.set_adjustable('datalim')
         fig = ax.get_figure()
