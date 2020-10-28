@@ -24,7 +24,7 @@ def full_multipolygon_df(discretizer=DefaultSystem):
                                          np.linspace(-180, 180, 500))
     h3_list = [discretizer.geo_to_ind(lon=lon, lat=lat)
                for lon, lat in zip(coords_lon.flatten(), coords_lat.flatten())]
-    return list_to_multipolygon_df(h3_list)
+    return list_to_multipolygon_df(h3_list, discretizer=discretizer)
 
 
 def list_to_multipolygon_df(list_of_inds, discretizer=DefaultSystem, split=True):
@@ -43,7 +43,7 @@ def list_to_multipolygon_df(list_of_inds, discretizer=DefaultSystem, split=True)
         {'geometry': polys},
         crs="EPSG:4326",
         index=unique_h3)
-    ##the normal.centroid shapely will not work to give the same as h3.h3_to_geo.
+    ##the normal.centroid shapely will not work to give the same as h3.h3_to_geo
     if hasattr(discretizer, 'ind_to_geo'):
         geo_df['centroid_col'] = [Point(discretizer.ind_to_geo(hexa)[::-1])
                                   for hexa in unique_h3]
