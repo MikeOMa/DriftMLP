@@ -50,10 +50,12 @@ class h3_default(discrete_system):
         return self.h3_api.geo_to_h3(lng=lon_rot, lat=lat_rot, resolution=self.res)
 
     def ind_to_boundary(self, ind):
-        return self.h3_api.h3_to_geo_boundary(ind, geo_json=True)
+        boundary = self.h3_api.h3_to_geo_boundary(ind, geo_json=True)
+        return [self.rotate_lon_lat(x[0], x[1], inverse=True) for x in boundary]
 
-    def ind_to_point(self, ind):
-        return self.h3_api.h3_to_geo(ind)
+    def ind_to_geo(self, ind):
+        lat, lon = self.h3_api.h3_to_geo(ind)
+        return self.rotate_lon_lat(lon=lon, lat=lat, inverse=True)
 
 
 DefaultSystem = h3_default()

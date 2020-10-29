@@ -225,9 +225,9 @@ class SingleSP:
             if rev:
                 h3_cartopy.plot_hex(gpd_df, self.sp_rev.h3id, ax=ax, color='red', **kwargs)
         else:
-            h3_cartopy.plot_line(gpd_df, self.sp.h3id, ax=ax, color=color, **kwargs)
+            h3_cartopy.plot_line(gpd_df, self.sp.h3id, 'centroid_col', ax=ax, color=color, **kwargs)
             if rev:
-                h3_cartopy.plot_hex(gpd_df, self.sp_rev.h3id, ax=ax, color='red', **kwargs)
+                h3_cartopy.plot_hex(gpd_df, self.sp_rev.h3id, centroid_col='centroid_col', ax=ax, color='red', **kwargs)
         ax.coastlines()
         ax.set_adjustable('datalim')
         fig = ax.get_figure()
