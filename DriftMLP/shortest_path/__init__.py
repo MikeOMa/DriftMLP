@@ -60,14 +60,14 @@ def AllPairwisePaths(network, source_list):
     return [get_all_paths(network, src, source_list) for src in source_list]
 
 
-def get_all_paths(network, src, dest_list):
+def get_all_paths(network, src, dest_list, weight='neglogprob'):
     from_node = network.vs(name=src)[0].index
     to_vertex_seqs = [network.vs(name=to_name) for to_name in dest_list]
     mask_node_in_graph = [len(vert_seq) == 1 for vert_seq in to_vertex_seqs]
     to_nodes = [vert_seq[0].index
                 for _bool, vert_seq in zip(mask_node_in_graph, to_vertex_seqs)
                 if _bool]
-    sps = network.get_shortest_paths(from_node, to_nodes, weights='neglogprob')
+    sps = network.get_shortest_paths(from_node, to_nodes, weights=weight)
     results_list = []
     dest_node_list = []
     count = 0
