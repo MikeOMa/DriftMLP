@@ -81,7 +81,7 @@ def remove_undesired(network: igraph.Graph, dict_rm: Dict = RM_DICT, discretizer
         if not silent:
             print(f'Removing {key} from the graph.')
 
-        drop_inds = discretizer.return_inds(dict_rm[key], rot=rot)
+        drop_inds = discretizer.return_inds(dict_rm[key])
         drop_vid = [v.index for v in network.vs if v['name'] in drop_inds]
         if len(drop_inds) > 0:
             network.delete_vertices(drop_vid)
@@ -115,7 +115,7 @@ def add_link(network: igraph.Graph, dict_add: Dict = ADD_DICT, add_gap=TIME_GAP,
                        f'Error occured on {key}.')
         if not silent:
             print(f'Adding a link for {key} from the graph.')
-        inds = discretizer.return_inds(dict_add[key], rot=rot)
+        inds = discretizer.return_inds(dict_add[key])
 
         ##check that the connection we are adding is in the graph.
         in_graph_bools = [ind in network.vs['name'] for ind in inds]
@@ -125,7 +125,6 @@ def add_link(network: igraph.Graph, dict_add: Dict = ADD_DICT, add_gap=TIME_GAP,
 
             stay_west = get_prob_stay(network, west_node)
             stay_east = get_prob_stay(network, east_node)
-            print(add_gap[key])
             going_east_prob = traveltime_to_probleave(add_gap[key][0], stay_west, network['day_cut_off'])
             going_west_prob = traveltime_to_probleave(add_gap[key][1], stay_east, network['day_cut_off'])
             # Lets add the desired connection.
