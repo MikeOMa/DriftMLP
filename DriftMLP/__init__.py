@@ -34,7 +34,7 @@ def file_to_network(driftfile=None, drift_kwargs=None, discretizer=DefaultSystem
     if store_story:
         ## This is memory intensive hence why it is off by default!
         net['stories'] = discrete_story
-    net['discretizer'] = discretizer
+    
 
     return net
 
