@@ -31,12 +31,9 @@ class discrete_system:
     def geo_boundary(self, *args, **kwargs):
         Polygon(self.ind_to_boundary(*args, **kwargs))
 
-    def return_inds(self, loc_list, rot=None):
-        if rot is None:
-            rot = random_ll_rot(identity=True)
-        locs_rotated = [rot(loc[0], loc[1]) for loc in loc_list]
+    def return_inds(self, loc_list):
         return [self.geo_to_ind(lon=loc[0], lat=loc[1])
-                for loc in locs_rotated]
+                for loc in loc_list]
 
 
 class h3_default(discrete_system):
