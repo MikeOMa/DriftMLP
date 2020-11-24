@@ -45,11 +45,11 @@ def list_to_multipolygon_df(list_of_inds, discretizer=DefaultSystem, split=True)
         crs="EPSG:4326",
         index=unique_h3)
     ##the normal.centroid shapely will not work to give the same as h3.h3_to_geo
+    geo_df.to_crs(crs="EPSG:4326")
     if hasattr(discretizer, 'ind_to_geo'):
         geo_df['centroid_col'] = [Point(discretizer.ind_to_geo(hexa))
                                   for hexa in unique_h3]
-    else:
-        geo_df.to_crs(crs= ccrs.Geodetic())
+    else: 
         geo_df['centroid_col'] = geo_df.centroid
 
     return geo_df
