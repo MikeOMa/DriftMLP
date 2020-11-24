@@ -3,6 +3,7 @@ import igraph
 import numpy as np
 from shapely.geometry import Point
 
+import cartopy.crs as ccrs
 import DriftMLP.plotting.shape_helpers as shp_help
 from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
 
@@ -20,8 +21,8 @@ def network_to_multipolygon_df(network: igraph.Graph, discretizer=DefaultSystem)
 
 
 def full_multipolygon_df(discretizer=DefaultSystem):
-    coords_lat, coords_lon = np.meshgrid(np.linspace(-90, 90, 500),
-                                         np.linspace(-180, 180, 500))
+    coords_lat, coords_lon = np.meshgrid(np.linspace(-90, 90, 3000),
+                                         np.linspace(-180, 180, 3000))
     h3_list = [discretizer.geo_to_ind(lon=lon, lat=lat)
                for lon, lat in zip(coords_lon.flatten(), coords_lat.flatten())]
     return list_to_multipolygon_df(h3_list, discretizer=discretizer)
@@ -48,7 +49,7 @@ def list_to_multipolygon_df(list_of_inds, discretizer=DefaultSystem, split=True)
         geo_df['centroid_col'] = [Point(discretizer.ind_to_geo(hexa))
                                   for hexa in unique_h3]
     else:
-        geo_df.to_crs()
+        geo_df.to_crs(crs= ccrs.Geodetic())
         geo_df['centroid_col'] = geo_df.centroid
 
     return geo_df
