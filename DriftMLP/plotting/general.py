@@ -5,8 +5,8 @@ import pandas as pd
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
 
-def plot_stations(stations_data, crs=None, names=-1,
-                  labelsize='x-large', ax=None,
+def plot_stations(stations_data, crs=None, names=None,
+                  labelsize='x-large', ax=None, fontweight='bold',
                   **kwargs):
     if crs is None:
         crs = ccrs.PlateCarree()
@@ -21,7 +21,7 @@ def plot_stations(stations_data, crs=None, names=-1,
     ax.plot(plot_data[:, 0], plot_data[:, 1], 'o',
             transform=ccrs.Geodetic(),
             **kwargs)
-    if names is not -1:
+    if names is not None:
 
         if hasattr(names, '__iter__'):
             str_names = [str(i) for i in names]
@@ -31,10 +31,9 @@ def plot_stations(stations_data, crs=None, names=-1,
             str_names = [str(i) for i in range(plot_data.shape[0])]
 
         for i in range(plot_data.shape[0]):
-            ax.text(plot_data[i, 0], plot_data[i, 1],
-                    str_names[i],
+            ax.annotate(str_names[i], (plot_data[i, 0], plot_data[i, 1]),
                     transform=ccrs.Geodetic(), fontsize=labelsize,
-                    fontweight='bold', zorder=11).set_clip_on(True)
+                    fontweight=fontweight, zorder=11, clip_on=True)
     ax.coastlines()
     return ax
 

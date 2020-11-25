@@ -1,7 +1,10 @@
 import warnings
+
 import h5py
-from DriftMLP.helpers import check_grid, check_any_grid, change_360_to_ew
 import numpy as np
+
+from DriftMLP.helpers import check_any_grid, change_360_to_ew
+
 # min max lon, min max lat
 north_at = [-82, -9, 18, 60]
 """
@@ -65,7 +68,7 @@ def drop_drogue(drift_data, variables, drogue):
 
 
 def drift_iter(drift_file, variables=None, attrs=False,
-               drift_ids=None, drop_na=True,
+               drift_ids=None, drop_na=False,
                scale_ew=True, drogue=None, int_ids=None,
                lon_lat_transform=None):
     # Open file

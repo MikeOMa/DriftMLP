@@ -99,8 +99,8 @@ def coloredshapes(h3_gpd, h3_inds, color_var, origin=None, ax=None, vmax=None, a
     if ax is None:
         fig, ax = plt.subplots(subplot_kw={'projection': crs})
         x_bound, y_bound = new_df_proj.unary_union.envelope.exterior.coords.xy
-        grid_bounds = extent_box(x_bound, lon=True) + \
-                      extent_box(y_bound, lon=False)
+        grid_bounds = extent_box(x_bound, is_lon=True) + \
+                      extent_box(y_bound, is_lon=False)
         ax.set_extent(grid_bounds, crs=crs)
         ax.gridlines(draw_labels=True)
     else:
@@ -123,10 +123,12 @@ def coloredshapes(h3_gpd, h3_inds, color_var, origin=None, ax=None, vmax=None, a
     return fig, ax
 
 
-def plot_line(h3_gpd, h3_inds, centroid_col=None, ax=None, bounds=None, fig_init=True, **kwargs):
+def plot_line(h3_gpd, h3_inds, centroid_col=None, ax=None, bounds=None, fig_init=False, crs=None, **kwargs):
     new_df = h3_gpd.loc[h3_inds].copy()
     # new_df.plot(column='probs', legend=True)
-    crs = ccrs.PlateCarree()
+    if crs is None:
+        crs = ccrs.PlateCarree()
+
     fig = ax.get_figure()
     crs_proj4 = crs.proj4_init
     new_df_proj = new_df  # .to_crs(crs_p
@@ -138,8 +140,8 @@ def plot_line(h3_gpd, h3_inds, centroid_col=None, ax=None, bounds=None, fig_init
     if fig_init:
         if bounds is None:
             x_bound, y_bound = new_df_proj.unary_union.envelope.exterior.coords.xy
-            grid_bounds = extent_box(x_bound, lon=True) + \
-                          extent_box(y_bound, lon=False)
+            grid_bounds = extent_box(x_bound, is_lon=True) + \
+                          extent_box(y_bound, is_lon=False)
             try:
                 ax.set_extent(grid_bounds, crs=crs)
             except:
@@ -162,7 +164,7 @@ def plot_gpd_points(dat, ax, crs, fl=False, **kwargs):
     xy = dat.apply(lambda x: x.xy)
     x = xy.apply(lambda x: float(x[0][0])).to_list()
     y = xy.apply(lambda x: float(x[1][0])).to_list()
-    ax.plot(x, y, transform=crs, **kwargs)
+    ax.plot(x, y, transform=ccrs.Geodetic(), **kwargs)
     if fl:
         ax.plot(x[0], y[0], 'o', transform=crs)
         ax.plot(x[-1], y[-1], 'x', transform=crs)

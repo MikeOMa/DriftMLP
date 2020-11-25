@@ -5,11 +5,13 @@ from DriftMLP import form_network
 from DriftMLP import shortest_path
 from DriftMLP.drifter_indexing import driftiter
 from DriftMLP.drifter_indexing import story
+from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
 from DriftMLP.rotations import random_ll_rot
-from .plotting.make_h3_gpd import network_to_multipolygon_df
+from .plotting.make_gpd import network_to_multipolygon_df
 
 
-def file_to_network(driftfile, drift_kwargs=None, day_cut_off=5, silent=False, store_story=False) -> igraph.Graph:
+def file_to_network(driftfile=None, drift_kwargs=None, discretizer=DefaultSystem, day_cut_off=5, silent=False,
+                    store_story=False, data_iterable=None) -> igraph.Graph:
     if drift_kwargs is None:
         drift_kwargs = {'variables': ['position', 'drogue', 'datetime'],
                         'drop_na': False,
@@ -17,14 +19,22 @@ def file_to_network(driftfile, drift_kwargs=None, day_cut_off=5, silent=False, s
         print('Making transition matrix with drogued drifters,'
               ' see file_to_network function'
               ' to change this.')
-    drift_gen = driftiter.generator(driftfile)
-    h3_stories = story.get_story(drift_gen(**drift_kwargs))
-    net = form_network.make_transition(h3_stories, day_cut_off=day_cut_off, observations_per_day=4)
+    condition = driftfile is None and driftiter is None
+    assert not condition, ValueError("Exactly one of driftfile or driftiter must be not None in 'file_to_network'")
+
+    if driftfile is not None:
+        ##Create the drifter generator then call it.
+        drift_gen = driftiter.generator(driftfile)(**drift_kwargs)
+    elif driftiter is not None:
+        drift_gen = data_iterable
+    discrete_story = story.get_story(drift_gen, discretizer=discretizer)
+    net = form_network.make_transition(discrete_story, day_cut_off=day_cut_off, observations_per_day=4)
     if 'lon_lat_transform' in drift_kwargs.keys():
         net['rotation'] = drift_kwargs['lon_lat_transform']
     if store_story:
         ## This is memory intensive hence why it is off by default!
-        net['stories'] = h3_stories
+        net['stories'] = discrete_story
+    
 
     return net
 
