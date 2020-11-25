@@ -9,10 +9,14 @@ from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
 ## Can be used to remove these undesired points
 RM_DICT = {'panama':
                [[-79.69761240838052, 9.071323224898283],
-                [-80.7277450395157, 8.661515581046203]],
+                [-80.7277450395157, 8.661515581046203],
+                [-80.62056, 8.62546],
+                [-79.75539, 9.14105]
+                ],
            'straitofgibraltar':
                [[-5.5999, 35.9945],
-                [-5.6149, 35.8804]]}
+                [-5.6149, 35.8804],
+                [-5.51375, 36.03685]]}
 
 ## Add points to link the strait of gibraltar after removing.
 ## The first point is on the west, second point on the east.
@@ -21,7 +25,7 @@ ADD_DICT = {'straitofgibraltar':
                  [-4.0, 36.0026]]  ## East point
             }
 TIME_GAP = {'straitofgibraltar':
-                [6 * 365, 100 * 365]}  ## 1 for west to east, 100 for east to west
+                [1 * 365, 100 * 365]}  ## 1 for west to east, 100 for east to west
 
 
 def change_360_to_ew(lon_arr):
@@ -88,6 +92,12 @@ def remove_undesired(network: igraph.Graph, dict_rm: Dict = RM_DICT, discretizer
         else:
             if not silent:
                 print(f'for {key} , {dict_rm[key]} not in graph so it is not dropped')
+
+
+def remove_attr_condition(network, max_val=5, attribute='N'):
+    """ Remove vertex if attribute on an vertex is small enough """
+    vals = [i for i, k in enumerate(network.vs) if k[attribute] < max_val]
+    network.delete_vertices(vals)
 
 
 def get_prob_stay(network, node_id: int):

@@ -61,7 +61,10 @@ def AllPairwisePaths(network, source_list):
 
 
 def get_all_paths(network, src, dest_list, weight='neglogprob'):
-    from_node = network.vs(name=src)[0].index
+    try:
+        from_node = network.vs(name=src)[0].index
+    except IndexError:
+        return [network_path(network, -1, -1, path=[]) for _ in range(len(dest_list))]
     to_vertex_seqs = [network.vs(name=to_name) for to_name in dest_list]
     mask_node_in_graph = [len(vert_seq) == 1 for vert_seq in to_vertex_seqs]
     to_nodes = [vert_seq[0].index
