@@ -80,7 +80,7 @@ def check_any_grid(array, grid):
     return (any(mask4 & new_mask))
 
 
-def remove_undesired(network: igraph.Graph, dict_rm: Dict = RM_DICT, discretizer=DefaultSystem, rot=None, silent=True):
+def remove_undesired(network: igraph.Graph, dict_rm: Dict = RM_DICT, discretizer=DefaultSystem, silent=True):
     for key in dict_rm.keys():
         if not silent:
             print(f'Removing {key} from the graph.')
@@ -114,7 +114,7 @@ def traveltime_to_probleave(travel_time, prob_stay, day_cut_off):
     return 1 / ((travel_time / day_cut_off) - 1) * prob_stay
 
 
-def add_link(network: igraph.Graph, dict_add: Dict = ADD_DICT, add_gap=TIME_GAP, rot=None, discretizer=DefaultSystem,
+def add_link(network: igraph.Graph, dict_add: Dict = ADD_DICT, add_gap=TIME_GAP, discretizer=DefaultSystem,
              silent=True):
     for key in dict_add.keys():
         assert len(dict_add[key]) == 2, ValueError(f'Components of dict_add must be lenth 2'
