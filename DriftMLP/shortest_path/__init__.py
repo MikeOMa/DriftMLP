@@ -224,7 +224,7 @@ class SingleSP:
             all_ids = self.sp.h3id + self.sp_rev.h3id
             gpd_df = make_gpd.list_to_multipolygon_df(all_ids, self.discretizer)
         if type_plot == 'hex':
-            h3_cartopy.plot_hex(gpd_df, self.sp.h3id, ax=ax, color=color, **kwargs)
+            ax = h3_cartopy.plot_hex(gpd_df, self.sp.h3id, ax=ax, color=color, **kwargs)
             if rev:
                 h3_cartopy.plot_hex(gpd_df, self.sp_rev.h3id, ax=ax, color='red', **kwargs)
         else:
