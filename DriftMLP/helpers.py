@@ -15,8 +15,8 @@ RM_DICT = {'panama':
                 ],
            'straitofgibraltar':
                [[-5.5999, 35.9945],
-                [-5.6149, 35.8804]]}
-# [-5.51375, 36.03685]]}
+                [-5.6149, 35.8804],
+                [-5.51375, 36.03685]]}
 
 ## Add points to link the strait of gibraltar after removing.
 ## The first point is on the west, second point on the east.
