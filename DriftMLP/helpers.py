@@ -141,3 +141,8 @@ def add_link(network: igraph.Graph, dict_add: Dict = ADD_DICT, add_gap=TIME_GAP,
             # N=-1 to help easily find these edges in future to see they are artificial.
             network.add_edge(west_node, east_node, prob=going_east_prob, neglogprob=-np.log(going_east_prob), N=-1)
             network.add_edge(east_node, west_node, prob=going_west_prob, neglogprob=-np.log(going_west_prob), N=-1)
+        else:
+            print(f'edge not added for key: {key}')
+            list_not_in = [loc for _bool, loc in dict_add[key] if not _bool]
+            print("missing node:")
+            print(list_not_in)
