@@ -51,3 +51,20 @@ def visualize_polygon(polyline, color):
     my_PolyLine = folium.PolyLine(locations=polyline, weight=8, color=color)
     m.add_child(my_PolyLine)
     return m
+
+
+def visualize_point(points, folium_map=None, text=None, **kwargs):
+    lat = [point[0] for point in points]
+    lng = [point[1] for point in points]
+
+    if folium_map is None:
+        m = folium.Map(location=[sum(lat) / len(lat), sum(lng) /
+                                 len(lng)], zoom_start=5,
+                       tiles='cartodbpositron')
+    else:
+        m = folium_map
+
+    for point in points:
+        my_marker = folium.Marker([points[1], point[0]], popup=text, **kwargs)
+        m.add_child(my_marker)
+    return m
