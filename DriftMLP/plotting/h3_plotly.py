@@ -65,6 +65,6 @@ def visualize_point(points, folium_map=None, text=None, **kwargs):
         m = folium_map
 
     for point in points:
-        my_marker = folium.Marker([points[1], point[0]], popup=text, **kwargs)
+        my_marker = folium.Marker([point[1], point[0]], popup=text, **kwargs)
         m.add_child(my_marker)
     return m
