@@ -49,7 +49,7 @@ def random_rot_xyz_arvo(identity=False):
     return rot
 
 class random_ll_rot:
-    def __init__(self, seed=None, identity=False, method='arvo'):
+    def __init__(self, seed=None, identity=False, method='quat'):
         if seed is not None:
             np.random.seed(seed)
 
