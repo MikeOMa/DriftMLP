@@ -7,6 +7,7 @@ from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
 
 ## Dict with points on the panama canal and strait of gibraltar
 ## Can be used to remove these undesired points
+## Locations taken from looking at maps.
 RM_DICT = {'panama':
                [[-79.69761240838052, 9.071323224898283],
                 [-80.7277450395157, 8.661515581046203],
@@ -19,7 +20,8 @@ RM_DICT = {'panama':
            'straitofgibraltar':
                [[-5.5999, 35.9945],
                 [-5.6149, 35.8804],
-                [-5.51375, 36.03685]]}
+                [-5.51375, 36.03685],
+                [-5.56489, 35.57513]]}
 
 ## Add points to link the strait of gibraltar after removing.
 ## The first point is on the west, second point on the east.

@@ -48,14 +48,17 @@ def random_rot_xyz_arvo(identity=False):
     rot = R.from_matrix(final_rot_matrix)
     return rot
 
+
 class random_ll_rot:
     def __init__(self, seed=None, identity=False, method='quat'):
         if seed is not None:
             np.random.seed(seed)
-
         if identity:
             self.rot = R.from_euler('xyz', [0] * 3)
         elif method == 'arvo':
+            ## Left in for backwards compatibility.
+            ## I don't know if the arvo method is truely random,
+            ## the quaternion method seems more popular.
             self.rot = random_rot_xyz_arvo()
         else:
             self.rot = random_rot_xyz_quat()
@@ -92,4 +95,4 @@ class random_ll_rot:
         lon_t = np.degrees(lon_rad_t)
         lat_t = np.degrees(lat_rad_t)
         loc_arr = np.vstack([lon_t, lat_t]).T
-        return(loc_arr)
+        return (loc_arr)
