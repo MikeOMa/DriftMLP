@@ -18,7 +18,8 @@ setuptools.setup(
         "folium",
         "geopandas",
         "pyproj>=2.2.0",
-        "matplotlib"
+        "matplotlib",
+        "numba"
     ],
     description="A set of tools for data extraction from the GDP database and estimating travel times",
     long_description=long_description,
