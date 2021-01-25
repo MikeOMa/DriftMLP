@@ -3,7 +3,7 @@ from typing import List
 
 import numpy as np
 
-from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
+from driftmlp.drifter_indexing.discrete_system import DefaultSystem
 
 
 def grid_story(traj_pos: np.ndarray, discretizer=DefaultSystem) -> List[int]:

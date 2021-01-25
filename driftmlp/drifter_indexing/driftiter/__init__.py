@@ -3,7 +3,7 @@ import warnings
 import h5py
 import numpy as np
 
-from DriftMLP.helpers import check_any_grid, change_360_to_ew
+from driftmlp.helpers import check_any_grid, change_360_to_ew
 
 # min max lon, min max lat
 north_at = [-82, -9, 18, 60]

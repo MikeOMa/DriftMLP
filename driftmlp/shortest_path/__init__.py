@@ -5,9 +5,9 @@ import igraph
 import matplotlib.pyplot as plt
 import numpy as np
 
-from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
-from DriftMLP.helpers import get_prob_stay
-from DriftMLP.plotting import h3_plotly, h3_cartopy, make_gpd
+from driftmlp.drifter_indexing.discrete_system import DefaultSystem
+from driftmlp.helpers import get_prob_stay
+from driftmlp.plotting import h3_plotly, h3_cartopy, make_gpd
 
 
 def plot_path(h3_seq, **kwargs):
@@ -238,6 +238,6 @@ class SingleSP:
 
     def __repr__(self):
         str1 = f'From: {self.orig}, To: {self.dest}\n'
-        str2 = f'Travel time for the forward journey(blue)\n{self.sp.travel_time}\n'
-        str3 = f'Travel time for the return journey(red)\n{self.sp_rev.travel_time}\n'
+        str2 = f'Travel time for the forward journey(blue)\n{round(self.sp.travel_time / 365, 2)} Years\n'
+        str3 = f'Travel time for the return journey(red)\n{round(self.sp_rev.travel_time / 365, 2)} Years\n'
         return str1 + str2 + str3

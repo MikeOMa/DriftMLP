@@ -13,6 +13,7 @@ def test_h3_discrete():
     point = 5, 10
     ind = transformer.geo_to_ind(point[0], point[1])
     geo_boundary = transformer.ind_to_boundary(ind)
+    print(geo_boundary)
     assert expected == geo_boundary
 
 

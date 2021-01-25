@@ -6,8 +6,6 @@ import numpy as np
 from numba import jit
 from shapely.geometry import Polygon
 
-from DriftMLP.rotations import random_ll_rot
-
 
 class discrete_system:
     def __init__(self):

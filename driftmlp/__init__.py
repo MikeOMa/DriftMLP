@@ -1,12 +1,14 @@
+import pickle
+
 import igraph
 import numpy as np
 
-from DriftMLP import form_network
-from DriftMLP import shortest_path
-from DriftMLP.drifter_indexing import driftiter
-from DriftMLP.drifter_indexing import story
-from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
-from DriftMLP.rotations import random_ll_rot
+from driftmlp import form_network
+from driftmlp import shortest_path
+from driftmlp.drifter_indexing import driftiter
+from driftmlp.drifter_indexing import story
+from driftmlp.drifter_indexing.discrete_system import DefaultSystem
+from driftmlp.rotations import random_ll_rot
 from .plotting.make_gpd import network_to_multipolygon_df
 
 
@@ -53,24 +55,47 @@ def BootstrapNetwork(network: igraph.Graph, visual=False):
     return boot_net
 
 
-def network_from_file(fname, visual=True, **kwargs) -> igraph.Graph:
+def GraphML_Reader(fname, process_edgename=True, **kwargs):
+    net = igraph.Graph.Read_GraphML(fname)
+    """
+    edge attribute 'name' needs to match the python typing.
+    """
+    num_interest = net.vs[0]['name']
+    if type(num_interest) in [int, float]:
+        warnings.warn('GraphML often handles numerical edge attributes poorly when the numbers are large.' \
+                      'If you find a bug check that the edge attributes are right')
+    if type(num_interest) is str:
+        if num_interest.isdigit():
+            net.vs['name'] = [int(i) for i in net.vs['name']]
+    if isinstance(net.vs[0]['name'], float):
+        net.vs['name'] = [int(i) for i in net.vs['name']]
+    return net
+
+
+def network_from_file(fname, visual=True, discretizer=DefaultSystem, **kwargs) -> igraph.Graph:
     name, postfix = fname.split('.')
-    if postfix == 'gml':
-        net = igraph.igraph_read_graph_graphml(fname)
+    valid_exts = ['h5', 'GraphML', '.p', '.pickle']
+    if postfix == 'GraphML':
+        net = GraphML_Reader(fname, **kwargs)
     elif postfix == 'h5':
         print('Creating network from drifter data')
         net = file_to_network(fname, **kwargs)
+
+    elif postfix == 'p':
+        net = pickle.load(open(fname, 'rb'))
+    else:
+        assert False, ValueError(f"{fname} not one of {valid_exts}.")
     ##If rotation is not in the attributes, assume it is identity (no rotation)
     if 'rotation' not in net.attributes():
         net['rotation'] = random_ll_rot(identity=True)
     if 'gpd' not in net.attributes() and visual:
-        net['gpd'] = network_to_multipolygon_df(net)
+        net['gpd'] = network_to_multipolygon_df(net, discretizer=discretizer)
     return net
 
 
 class MLP:
-    def __init__(self, fname):
-        self.net = network_from_file(fname)
+    def __init__(self, fname, **kwargs):
+        self.net = network_from_file(fname, **kwargs)
 
     def get_mlpath(self, lon, lat):
         return shortest_path.SingleSP(self.net, lon, lat)

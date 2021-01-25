@@ -3,9 +3,8 @@ import igraph
 import numpy as np
 from shapely.geometry import Point
 
-import cartopy.crs as ccrs
-import DriftMLP.plotting.shape_helpers as shp_help
-from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
+import driftmlp.plotting.shape_helpers as shp_help
+from driftmlp.drifter_indexing.discrete_system import DefaultSystem
 
 
 def network_to_multipolygon_df(network: igraph.Graph, discretizer=DefaultSystem):

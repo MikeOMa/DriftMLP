@@ -3,7 +3,7 @@ from typing import Dict
 import igraph
 import numpy as np
 
-from DriftMLP.drifter_indexing.discrete_system import DefaultSystem
+from driftmlp.drifter_indexing.discrete_system import DefaultSystem
 
 ## Dict with points on the panama canal and strait of gibraltar
 ## Can be used to remove these undesired points
