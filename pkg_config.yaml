@@ -1,4 +1,4 @@
-name: driftmlp
+name: driftmlp_env
 channels:
   - conda-forge/label/cf202003
   - conda-forge
