@@ -1,0 +1,1 @@
+$PYTHON setupy.py install
