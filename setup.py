@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="DriftMLP",
-    version="0.2",
+    name="driftmlp",
+    version="1.0",
     author="Mike O'Malley",
     author_email="m.omalley2@lancaster.ac.uk",
     install_requires=[

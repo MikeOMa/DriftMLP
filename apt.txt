@@ -1,3 +1,0 @@
-proj-bin
-libproj-dev
-libgeos++-dev
