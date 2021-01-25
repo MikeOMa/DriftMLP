@@ -1,6 +1,6 @@
 import numpy as np
 
-from DriftMLP import file_to_network
+from driftmlp import file_to_network
 
 
 def drift_gen():
