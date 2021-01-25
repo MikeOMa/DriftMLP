@@ -95,4 +95,4 @@ class random_ll_rot:
         lon_t = np.degrees(lon_rad_t)
         lat_t = np.degrees(lat_rad_t)
         loc_arr = np.vstack([lon_t, lat_t]).T
-        return (loc_arr)
+        return loc_arr

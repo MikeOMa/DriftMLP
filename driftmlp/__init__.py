@@ -79,7 +79,7 @@ def network_from_file(fname, visual=True, discretizer=DefaultSystem, **kwargs) -
         net = GraphML_Reader(fname, **kwargs)
     elif postfix == 'h5':
         print('Creating network from drifter data')
-        net = file_to_network(fname, **kwargs)
+        net = file_to_network(fname, discretizer=discretizer, **kwargs)
 
     elif postfix == 'p':
         net = pickle.load(open(fname, 'rb'))
