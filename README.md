@@ -41,8 +41,6 @@ The package has 2 main usage components
 #TODO
 
 - Document all functions alongside typehints.
-- Refactor the code a bit such that the h3 spatial index is less core to the code. Make a class named `SpatialIndex` that can be adapted to different index systems easily.
 - Publish to pip/ conda-forge.
-- Fix binder link below with example (currently does not work)
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MikeOMa/DriftMLP/master?filepath=example%2Finteractive.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MikeOMa/DriftMLP_Interactive_Notebook.git/HEAD?filepath=interactive.ipynb)
