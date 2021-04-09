@@ -7,7 +7,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 
-def extent_box(oned_coords: List, scale: float = 1., is_lon: bool = True) -> List:
+def extent_box(oned_coords: List, scale: float = 1.0, is_lon: bool = True) -> List:
     """
 
     Parameters
@@ -35,8 +35,7 @@ def extent_box(oned_coords: List, scale: float = 1., is_lon: bool = True) -> Lis
 def gpd_extents(h3_gpd):
     x_bound, y_bound = h3_gpd.unary_union.envelope.exterior.coords.xy
 
-    grid_bounds = extent_box(x_bound, is_lon=True) + \
-                  extent_box(y_bound, is_lon=False)
+    grid_bounds = extent_box(x_bound, is_lon=True) + extent_box(y_bound, is_lon=False)
     return grid_bounds
 
 
@@ -57,12 +56,15 @@ def ax_none_handler(ax):
     if ax is None:
         fig, ax = default_figure()
     else:
-        assert isinstance(ax, cartopy.mpl.geoaxes.GeoAxesSubplot), \
-            ValueError("given ax is not GeoAxesSubplot. Give a cartopy projection when creating the axis")
+        assert isinstance(ax, cartopy.mpl.geoaxes.GeoAxesSubplot), ValueError(
+            "given ax is not GeoAxesSubplot. Give a cartopy projection when creating the axis"
+        )
         return ax.get_figure(), ax
 
 
-def plot_hex(h3_gpd: gpd.GeoDataFrame, h3_inds, ax=None, set_extent=True, *args, **kwargs):
+def plot_hex(
+    h3_gpd: gpd.GeoDataFrame, h3_inds, ax=None, set_extent=True, *args, **kwargs
+):
     new_df = h3_gpd.loc[h3_inds].copy()
     # new_df.plot(column='probs', legend=True)
     # crs_proj4 = crs.proj4_init
@@ -77,11 +79,20 @@ def plot_hex(h3_gpd: gpd.GeoDataFrame, h3_inds, ax=None, set_extent=True, *args,
     return ax
 
 
-def coloredshapes(h3_gpd, h3_inds, color_var, origin=None, ax=None, vmax=None, ax_loc=[0.87, 0.2, 0.02, 0.6]):
+def coloredshapes(
+    h3_gpd,
+    h3_inds,
+    color_var,
+    origin=None,
+    ax=None,
+    vmax=None,
+    ax_loc=[0.87, 0.2, 0.02, 0.6],
+):
     new_df = h3_gpd.loc[h3_inds].copy()
     assert new_df.shape[0] == len(color_var), ValueError(
-        "color_var must be the same length as h3_inds")
-    new_df['color_var'] = color_var
+        "color_var must be the same length as h3_inds"
+    )
+    new_df["color_var"] = color_var
     crs = ccrs.PlateCarree()
     new_df_proj = new_df  # .to_crs(crs_proj4)
     cmap = plt.cm.RdYlBu_r
@@ -92,38 +103,49 @@ def coloredshapes(h3_gpd, h3_inds, color_var, origin=None, ax=None, vmax=None, a
         try:
             vmax = probs_list[-2] * 1.5
         except ValueError:
-            print('setting vmax=1 as fail')
+            print("setting vmax=1 as fail")
             vmax = 1
 
-    norm = mpl.colors.Normalize(vmin=0., vmax=vmax)
+    norm = mpl.colors.Normalize(vmin=0.0, vmax=vmax)
     if ax is None:
-        fig, ax = plt.subplots(subplot_kw={'projection': crs})
+        fig, ax = plt.subplots(subplot_kw={"projection": crs})
         x_bound, y_bound = new_df_proj.unary_union.envelope.exterior.coords.xy
-        grid_bounds = extent_box(x_bound, is_lon=True) + \
-                      extent_box(y_bound, is_lon=False)
+        grid_bounds = extent_box(x_bound, is_lon=True) + extent_box(
+            y_bound, is_lon=False
+        )
         ax.set_extent(grid_bounds, crs=crs)
         ax.gridlines(draw_labels=True)
     else:
         fig = ax.get_figure()
 
     for n, hexa in new_df_proj.iterrows():
-        ax.add_geometries([hexa.geometry], crs=crs,
-                          facecolor=cmap(norm(hexa.color_var)))
+        ax.add_geometries(
+            [hexa.geometry], crs=crs, facecolor=cmap(norm(hexa.color_var))
+        )
 
         if n == origin:
-            ax.add_geometries([hexa.geometry], crs=crs, edgecolor='black')
+            ax.add_geometries([hexa.geometry], crs=crs, edgecolor="black")
 
     ###
     cax = fig.add_axes(ax_loc)
     # , spacing='proportional')
-    cb = mpl.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, extend='max')
-    cb.set_label('transition probability')
+    cb = mpl.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, extend="max")
+    cb.set_label("transition probability")
 
     ax.coastlines()
     return fig, ax
 
 
-def plot_line(h3_gpd, h3_inds, centroid_col=None, ax=None, bounds=None, fig_init=False, crs=None, **kwargs):
+def plot_line(
+    h3_gpd,
+    h3_inds,
+    centroid_col=None,
+    ax=None,
+    bounds=None,
+    fig_init=False,
+    crs=None,
+    **kwargs
+):
     new_df = h3_gpd.loc[h3_inds].copy()
     # new_df.plot(column='probs', legend=True)
     if crs is None:
@@ -134,14 +156,15 @@ def plot_line(h3_gpd, h3_inds, centroid_col=None, ax=None, bounds=None, fig_init
     new_df_proj = new_df  # .to_crs(crs_p
     # new_df_proj = new_df_proj.set_geometry('rotated_centroid')
     if ax is None:
-        fig, ax = plt.subplots(subplot_kw={'projection': crs})
+        fig, ax = plt.subplots(subplot_kw={"projection": crs})
 
         fig_init = True
     if fig_init:
         if bounds is None:
             x_bound, y_bound = new_df_proj.unary_union.envelope.exterior.coords.xy
-            grid_bounds = extent_box(x_bound, is_lon=True) + \
-                          extent_box(y_bound, is_lon=False)
+            grid_bounds = extent_box(x_bound, is_lon=True) + extent_box(
+                y_bound, is_lon=False
+            )
             try:
                 ax.set_extent(grid_bounds, crs=crs)
             except:
@@ -166,5 +189,5 @@ def plot_gpd_points(dat, ax, crs, fl=False, **kwargs):
     y = xy.apply(lambda x: float(x[1][0])).to_list()
     ax.plot(x, y, transform=ccrs.Geodetic(), **kwargs)
     if fl:
-        ax.plot(x[0], y[0], 'o', transform=crs)
-        ax.plot(x[-1], y[-1], 'x', transform=crs)
+        ax.plot(x[0], y[0], "o", transform=crs)
+        ax.plot(x[-1], y[-1], "x", transform=crs)

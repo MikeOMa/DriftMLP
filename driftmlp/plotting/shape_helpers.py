@@ -1,7 +1,6 @@
 from typing import List
 
-from shapely.geometry import LineString
-from shapely.geometry import Polygon, MultiPolygon
+from shapely.geometry import LineString, MultiPolygon, Polygon
 from shapely.ops import split
 
 

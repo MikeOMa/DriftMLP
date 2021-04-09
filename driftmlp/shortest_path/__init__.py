@@ -7,7 +7,7 @@ import numpy as np
 
 from driftmlp.drifter_indexing.discrete_system import DefaultSystem
 from driftmlp.helpers import get_prob_stay
-from driftmlp.plotting import h3_plotly, h3_cartopy, make_gpd
+from driftmlp.plotting import h3_cartopy, h3_plotly, make_gpd
 
 
 def plot_path(h3_seq, **kwargs):
@@ -15,8 +15,13 @@ def plot_path(h3_seq, **kwargs):
     return m
 
 
-def sp_igraph(network: igraph.Graph, name_from: int = None, name_to: int = None, weight='neglogprob',
-              node_fromto=None) -> List[int]:
+def sp_igraph(
+    network: igraph.Graph,
+    name_from: int = None,
+    name_to: int = None,
+    weight="neglogprob",
+    node_fromto=None,
+) -> List[int]:
     """
 
     Parameters
@@ -49,7 +54,7 @@ def travel_time(network, source_id, target_id):
     # Must exist as it is on the shortest path
 
     eid = network.get_eid(source_id, target_id)
-    prob_leave = network.es[eid]['prob']
+    prob_leave = network.es[eid]["prob"]
     prob_stay = get_prob_stay(network, source_id)
     # Negative binomial with 0 being a failure has mean
     nb_mean = prob_stay / prob_leave + 1
@@ -60,16 +65,18 @@ def AllPairwisePaths(network, source_list):
     return [get_all_paths(network, src, source_list) for src in source_list]
 
 
-def get_all_paths(network, src, dest_list, weight='neglogprob'):
+def get_all_paths(network, src, dest_list, weight="neglogprob"):
     try:
         from_node = network.vs(name=src)[0].index
     except IndexError:
         return [network_path(network, -1, -1, path=[]) for _ in range(len(dest_list))]
     to_vertex_seqs = [network.vs(name=to_name) for to_name in dest_list]
     mask_node_in_graph = [len(vert_seq) == 1 for vert_seq in to_vertex_seqs]
-    to_nodes = [vert_seq[0].index
-                for _bool, vert_seq in zip(mask_node_in_graph, to_vertex_seqs)
-                if _bool]
+    to_nodes = [
+        vert_seq[0].index
+        for _bool, vert_seq in zip(mask_node_in_graph, to_vertex_seqs)
+        if _bool
+    ]
     sps = network.get_shortest_paths(from_node, to_nodes, weights=weight)
     results_list = []
     dest_node_list = []
@@ -83,7 +90,10 @@ def get_all_paths(network, src, dest_list, weight='neglogprob'):
             results_list.append([])
             ### if the node is not in the list
             dest_node_list.append(-1)
-    ret = [network_path(network, src, dest, path=path) for dest, path in zip(dest_list, results_list)]
+    ret = [
+        network_path(network, src, dest, path=path)
+        for dest, path in zip(dest_list, results_list)
+    ]
     return ret
 
 
@@ -95,19 +105,19 @@ def check_path(path: List, src: int, dest: int):
     path : object
     """
     if path == []:
-        path_message = 'empty'
+        path_message = "empty"
         ret = []
     elif np.isnan(path[0]):
-        path_message = 'dest not in graph'
+        path_message = "dest not in graph"
         ret = []
     elif dest == src:
-        path_message = 'src=dest'
+        path_message = "src=dest"
         ret = [src]
-    elif (path[0] != src):
-        path_message = 'path[0]!=src'
+    elif path[0] != src:
+        path_message = "path[0]!=src"
         ret = []
-    elif (path[-1] != dest):
-        path_message = 'path[-1]!=dest'
+    elif path[-1] != dest:
+        path_message = "path[-1]!=dest"
         ret = []
     else:
         path_message = None
@@ -129,14 +139,16 @@ class network_path:
         except IndexError:
             self.dest_net = -1
 
-        self.day_cut_off = network['day_cut_off']
+        self.day_cut_off = network["day_cut_off"]
         if self.dest_net == -1 or self.src_net == -1:
             self.all_sps = [np.nan]
             self.nid = [np.nan]
         elif path is None:
-            self.all_sps = sp_igraph(network, node_fromto=[self.src_net, self.dest_net], **kwargs)
+            self.all_sps = sp_igraph(
+                network, node_fromto=[self.src_net, self.dest_net], **kwargs
+            )
             if len(self.all_sps) > 1:
-                warnings.warn(f'more than one SP for source node {src}, {dest}')
+                warnings.warn(f"more than one SP for source node {src}, {dest}")
             self.nid = self.all_sps[-1]
         else:
             # Include all_sps to match the above.
@@ -144,10 +156,10 @@ class network_path:
             self.all_sps = [path]
             self.nid = path
         self.error_msg, self.nid = check_path(self.nid, self.src_net, self.dest_net)
-        self.h3id = network.vs[self.nid]['name']
+        self.h3id = network.vs[self.nid]["name"]
         self.travel_time_list = self.expected_days(network)
         self.travel_time = sum(self.travel_time_list)
-        self.titlestring = f'Path from {src} to {dest}'
+        self.titlestring = f"Path from {src} to {dest}"
 
     def update_nid(self, network):
         """
@@ -180,13 +192,17 @@ class network_path:
         elif not isinstance(path[0], int):
             traveltime_list = [-1]
         else:
-            traveltime_list = [travel_time(network, path[i], path[i + 1]) * self.day_cut_off
-                               for i in range(len(path) - 1)]
+            traveltime_list = [
+                travel_time(network, path[i], path[i + 1]) * self.day_cut_off
+                for i in range(len(path) - 1)
+            ]
         return traveltime_list
 
 
 class SingleSP:
-    def __init__(self, network, orig, dest, weight='neglogprob', discretizer=DefaultSystem):
+    def __init__(
+        self, network, orig, dest, weight="neglogprob", discretizer=DefaultSystem
+    ):
         self.orig = orig
         self.dest = dest
         self.h3_inds = discretizer.return_inds([orig, dest])
@@ -195,15 +211,19 @@ class SingleSP:
 
     def FromNetwork(self, network, weight):
         self.sp = network_path(network, self.h3_inds[0], self.h3_inds[1], weight=weight)
-        self.sp_rev = network_path(network, self.h3_inds[1], self.h3_inds[0], weight=weight)
+        self.sp_rev = network_path(
+            network, self.h3_inds[1], self.h3_inds[0], weight=weight
+        )
 
     def plot_folium(self, rev=True, m=None, **kwargs):
-        m = plot_path(self.sp.h3id, color='blue', folium_map=m, **kwargs)
+        m = plot_path(self.sp.h3id, color="blue", folium_map=m, **kwargs)
         if rev:
-            m = plot_path(self.sp_rev.h3id, color='red', folium_map=m)
+            m = plot_path(self.sp_rev.h3id, color="red", folium_map=m)
         return m
 
-    def plot_cartopy(self, rev=True, ax=None, gpd_df=None, color='blue', type_plot='hex', **kwargs):
+    def plot_cartopy(
+        self, rev=True, ax=None, gpd_df=None, color="blue", type_plot="hex", **kwargs
+    ):
         """
         Note this function cannot plot rotated paths. Unless type='line'
         Parameters
@@ -223,21 +243,32 @@ class SingleSP:
         if gpd_df is None:
             all_ids = self.sp.h3id + self.sp_rev.h3id
             gpd_df = make_gpd.list_to_multipolygon_df(all_ids, self.discretizer)
-        if type_plot == 'hex':
+        if type_plot == "hex":
             ax = h3_cartopy.plot_hex(gpd_df, self.sp.h3id, ax=ax, color=color, **kwargs)
             if rev:
-                h3_cartopy.plot_hex(gpd_df, self.sp_rev.h3id, ax=ax, color='red', **kwargs)
+                h3_cartopy.plot_hex(
+                    gpd_df, self.sp_rev.h3id, ax=ax, color="red", **kwargs
+                )
         else:
-            h3_cartopy.plot_line(gpd_df, self.sp.h3id, 'centroid_col', ax=ax, color=color, **kwargs)
+            h3_cartopy.plot_line(
+                gpd_df, self.sp.h3id, "centroid_col", ax=ax, color=color, **kwargs
+            )
             if rev:
-                h3_cartopy.plot_hex(gpd_df, self.sp_rev.h3id, centroid_col='centroid_col', ax=ax, color='red', **kwargs)
+                h3_cartopy.plot_hex(
+                    gpd_df,
+                    self.sp_rev.h3id,
+                    centroid_col="centroid_col",
+                    ax=ax,
+                    color="red",
+                    **kwargs,
+                )
         ax.coastlines()
-        ax.set_adjustable('datalim')
+        ax.set_adjustable("datalim")
         fig = ax.get_figure()
         return fig, ax
 
     def __repr__(self):
-        str1 = f'From: {self.orig}, To: {self.dest}\n'
-        str2 = f'Travel time for the forward journey(blue)\n{round(self.sp.travel_time / 365, 2)} Years\n'
-        str3 = f'Travel time for the return journey(red)\n{round(self.sp_rev.travel_time / 365, 2)} Years\n'
+        str1 = f"From: {self.orig}, To: {self.dest}\n"
+        str2 = f"Travel time for the forward journey(blue)\n{round(self.sp.travel_time / 365, 2)} Years\n"
+        str3 = f"Travel time for the return journey(red)\n{round(self.sp_rev.travel_time / 365, 2)} Years\n"
         return str1 + str2 + str3

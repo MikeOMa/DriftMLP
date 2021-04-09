@@ -3,7 +3,7 @@ import warnings
 import h5py
 import numpy as np
 
-from driftmlp.helpers import check_any_grid, change_360_to_ew
+from driftmlp.helpers import change_360_to_ew, check_any_grid
 
 # min max lon, min max lat
 north_at = [-82, -9, 18, 60]
@@ -23,7 +23,7 @@ def drifter_dict(drifter_id_group, variables, na_drop=False):
     Output:
         dict_out: dictionary with keys variables.
     """
-    pos_entry = drifter_id_group['position']
+    pos_entry = drifter_id_group["position"]
     if na_drop:
         mask_keep = pos_entry[:, 0] < 400
     else:
@@ -31,11 +31,11 @@ def drifter_dict(drifter_id_group, variables, na_drop=False):
         # mask_keep is just a mask of trues
         mask_keep = pos_entry[:, 0] > -np.inf
     dict_out = {key: drifter_id_group[key][:][mask_keep] for key in variables}
-    if 'position' in variables and not na_drop:
-        dict_out['position'][mask_na, :] = np.nan
-    if 'datetime' in variables:
+    if "position" in variables and not na_drop:
+        dict_out["position"][mask_na, :] = np.nan
+    if "datetime" in variables:
         # Retype date time so we can use it easily
-        dict_out['datetime'] = dict_out['datetime'].astype(np.datetime64)
+        dict_out["datetime"] = dict_out["datetime"].astype(np.datetime64)
     return dict_out
 
 
@@ -55,9 +55,10 @@ def drop_drogue(drift_data, variables, drogue):
     # Do nothing is drogue flag is none
     if drogue is not None:
         assert isinstance(drogue, bool), ValueError(
-            "drogue arugment must be a boolean or None")
+            "drogue arugment must be a boolean or None"
+        )
         # drogue key may not be in drift_data, so use the original h5py reference
-        drogue_mask = drift_data['drogue']
+        drogue_mask = drift_data["drogue"]
         if not drogue:
             drogue_mask = np.invert(drogue_mask)
         # Do not loop through the keys of drift_data as there are metadata entries
@@ -67,15 +68,22 @@ def drop_drogue(drift_data, variables, drogue):
     return drift_data
 
 
-def drift_iter(drift_file, variables=None, attrs=False,
-               drift_ids=None, drop_na=False,
-               scale_ew=True, drogue=None, int_ids=None,
-               lon_lat_transform=None):
+def drift_iter(
+    drift_file,
+    variables=None,
+    attrs=False,
+    drift_ids=None,
+    drop_na=False,
+    scale_ew=True,
+    drogue=None,
+    int_ids=None,
+    lon_lat_transform=None,
+):
     # Open file
-    H5_open = h5py.File(drift_file, 'r')
+    H5_open = h5py.File(drift_file, "r")
     # Access the interpolated drifter data
-    drift_base = H5_open['drifters']
-    all_ids = drift_base['ids'][:]
+    drift_base = H5_open["drifters"]
+    all_ids = drift_base["ids"][:]
     if drift_ids is not None:
         drift_ids = list(drift_ids)
         drift_unique = set(drift_ids)
@@ -85,7 +93,8 @@ def drift_iter(drift_file, variables=None, attrs=False,
         drift_intercection = drift_unique.intersection(all_ids_set)
 
         assert len(drift_intercection) == len(drift_unique), ValueError(
-            "Some ids in drift_ids are not valid, check input")
+            "Some ids in drift_ids are not valid, check input"
+        )
 
         drift_ids = list(drift_intercection)
     elif int_ids is not None:
@@ -102,24 +111,27 @@ def drift_iter(drift_file, variables=None, attrs=False,
         variable_list = posible
     else:
         variable_list = set(posible) & set(variables)
-        variables_notin = set(variables)-set(posible)
-        assert len(variables_notin) == 0, ValueError("Some of variables not contained in the group`.\
+        variables_notin = set(variables) - set(posible)
+        assert len(variables_notin) == 0, ValueError(
+            "Some of variables not contained in the group`.\
         One of which being {}.\
-        Note, do not include metadata names, use meta=True instead".
-        format(variables_notin.pop()))
-        if drogue is not None and 'drogue' not in variable_list:
-            variable_list = variable_list+['drogue']
+        Note, do not include metadata names, use meta=True instead".format(
+                variables_notin.pop()
+            )
+        )
+        if drogue is not None and "drogue" not in variable_list:
+            variable_list = variable_list + ["drogue"]
 
     for i in drift_ids:
-        drifter_ds = drift_base[f'{i}']
-        drift_data = drifter_dict(
-            drifter_ds, variables=variable_list, na_drop=drop_na)
+        drifter_ds = drift_base[f"{i}"]
+        drift_data = drifter_dict(drifter_ds, variables=variable_list, na_drop=drop_na)
         if scale_ew:
-            drift_data['position'][:, 0] = change_360_to_ew(
-                drift_data['position'][:, 0])
+            drift_data["position"][:, 0] = change_360_to_ew(
+                drift_data["position"][:, 0]
+            )
         if lon_lat_transform is not None:
-            old_dat = drift_data['position']
-            drift_data['position'] = lon_lat_transform(drift_data['position'])
+            old_dat = drift_data["position"]
+            drift_data["position"] = lon_lat_transform(drift_data["position"])
         drop_drogue(drift_data, variable_list, drogue)
 
         drift_meta = drifter_meta(drifter_ds, variables=meta_keys)
@@ -139,8 +151,7 @@ def get_drifters_in_grid(drift_file, grid):
 
 
 def get_id_in_range(drift_iter, grid=[-np.inf, np.inf, -np.inf, np.inf]):
-    id_in_range = [k['id']
-                   for k in drift_iter if check_any_grid(k['position'], grid)]
+    id_in_range = [k["id"] for k in drift_iter if check_any_grid(k["position"], grid)]
     return id_in_range
 
 
@@ -154,8 +165,8 @@ class generator:
 
 
 def get_drifter_ids(drift_file):
-    H5_open = h5py.File(drift_file, 'r')
-    drift_group = H5_open['drifters']
-    drift_ids = drift_group['ids'][:]
+    H5_open = h5py.File(drift_file, "r")
+    drift_group = H5_open["drifters"]
+    drift_ids = drift_group["ids"][:]
     H5_open.close()
     return drift_ids

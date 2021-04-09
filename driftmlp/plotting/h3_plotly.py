@@ -22,22 +22,25 @@ def visualize_hexagons(hexagons, color="red", folium_map=None, weight=8, fix=Tru
         lng.extend(map(lambda v: v[1], polyline))
         if fix:
             polyline_expanded = split_polys(
-                [point[::-1] for point in polyline], shapely_ret=False)
-            polyline_expanded = [[point[::-1] for point in poly]
-                                 for poly in polyline_expanded]
+                [point[::-1] for point in polyline], shapely_ret=False
+            )
+            polyline_expanded = [
+                [point[::-1] for point in poly] for poly in polyline_expanded
+            ]
             polylines = polylines + polyline_expanded
         else:
             polylines.append(polyline)
 
     if folium_map is None:
-        m = folium.Map(location=[sum(lat) / len(lat), sum(lng) /
-                                 len(lng)], zoom_start=5,
-                       tiles='cartodbpositron')
+        m = folium.Map(
+            location=[sum(lat) / len(lat), sum(lng) / len(lng)],
+            zoom_start=3,
+            tiles="cartodbpositron",
+        )
     else:
         m = folium_map
     for polyline in polylines:
-        my_PolyLine = folium.PolyLine(
-            locations=polyline, weight=weight, color=color)
+        my_PolyLine = folium.PolyLine(locations=polyline, weight=weight, color=color)
         m.add_child(my_PolyLine)
     return m
 
@@ -46,8 +49,11 @@ def visualize_polygon(polyline, color):
     polyline.append(polyline[0])
     lat = [p[0] for p in polyline]
     lng = [p[1] for p in polyline]
-    m = folium.Map(location=[sum(lat) / len(lat), sum(lng) /
-                             len(lng)], zoom_start=13, tiles='cartodbpositron')
+    m = folium.Map(
+        location=[sum(lat) / len(lat), sum(lng) / len(lng)],
+        zoom_start=13,
+        tiles="cartodbpositron",
+    )
     my_PolyLine = folium.PolyLine(locations=polyline, weight=8, color=color)
     m.add_child(my_PolyLine)
     return m
@@ -58,9 +64,11 @@ def visualize_point(points, folium_map=None, text=None, **kwargs):
     lng = [point[1] for point in points]
 
     if folium_map is None:
-        m = folium.Map(location=[sum(lat) / len(lat), sum(lng) /
-                                 len(lng)], zoom_start=5,
-                       tiles='cartodbpositron')
+        m = folium.Map(
+            location=[sum(lat) / len(lat), sum(lng) / len(lng)],
+            zoom_start=5,
+            tiles="cartodbpositron",
+        )
     else:
         m = folium_map
 

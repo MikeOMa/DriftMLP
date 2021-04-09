@@ -26,7 +26,8 @@ def grid_story(traj_pos: np.ndarray, discretizer=DefaultSystem) -> List[int]:
         if not np.isnan(lng):
             in_grid_id = discretizer(lon=lng, lat=lat)
             assert in_grid_id != 0, ValueError(
-                f'an invalid longitude or latitude has been given to discretizer.geo_to_ind. longitude: {lng}, latitude: {lat}.')
+                f"an invalid longitude or latitude has been given to discretizer.geo_to_ind. longitude: {lng}, latitude: {lat}."
+            )
             story.append(in_grid_id)
         else:
             story.append(-1)
@@ -40,11 +41,10 @@ def get_story(drift_iter, discretizer=DefaultSystem, silent=True) -> List[List[i
     c = 0
 
     for data_dict in drift_iter:
-        story = grid_story(data_dict['position'], discretizer=discretizer)
+        story = grid_story(data_dict["position"], discretizer=discretizer)
         list_of_storys.append(story)
         c += 1
     if not silent:
         print("Number of Drifters used: {}".format(c))
-        print("Time Taken to match drifters to grids: %f sec" %
-              (time()-t_start))
+        print("Time Taken to match drifters to grids: %f sec" % (time() - t_start))
     return list_of_storys

@@ -1,5 +1,5 @@
 import math
-from math import sin, cos
+from math import cos, sin
 
 import numpy as np
 from scipy.spatial.transform import Rotation as R
@@ -36,13 +36,18 @@ def random_rot_xyz_arvo(identity=False):
         random_pars = np.random.uniform(0, 1, 3)
 
     theta = random_pars[0] * np.pi * 2
-    R1 = np.array([[np.cos(theta), np.sin(theta), 0],
-                   [-np.sin(theta), np.cos(theta), 0],
-                   [0, 0, 1]]
-                  )
+    R1 = np.array(
+        [
+            [np.cos(theta), np.sin(theta), 0],
+            [-np.sin(theta), np.cos(theta), 0],
+            [0, 0, 1],
+        ]
+    )
     phi = random_pars[1] * np.pi * 2
     z = random_pars[2]
-    v = np.array([np.cos(phi) * np.sqrt(z), np.sin(phi) * np.sqrt(z), np.sqrt(1 - z)]).reshape(3, 1)
+    v = np.array(
+        [np.cos(phi) * np.sqrt(z), np.sin(phi) * np.sqrt(z), np.sqrt(1 - z)]
+    ).reshape(3, 1)
     R2 = 2 * v @ v.T - np.eye(3)
     final_rot_matrix = R2 @ R1
     rot = R.from_matrix(final_rot_matrix)
@@ -50,12 +55,12 @@ def random_rot_xyz_arvo(identity=False):
 
 
 class random_ll_rot:
-    def __init__(self, seed=None, identity=False, method='quat'):
+    def __init__(self, seed=None, identity=False, method="quat"):
         if seed is not None:
             np.random.seed(seed)
         if identity:
-            self.rot = R.from_euler('xyz', [0] * 3)
-        elif method == 'arvo':
+            self.rot = R.from_euler("xyz", [0] * 3)
+        elif method == "arvo":
             ## Left in for backwards compatibility.
             ## I don't know if the arvo method is truely random,
             ## the quaternion method seems more popular.
@@ -73,9 +78,10 @@ class random_ll_rot:
         elif isinstance(loc_1, np.ndarray):
             ret = self.arr_call(loc_1)
         else:
-            ValueError('Supply either loc_1: numeric , loc_2: numeric'
-                       'OR loc_1 : list',
-                       'OR loc_1 : np.ndarray')
+            ValueError(
+                "Supply either loc_1: numeric , loc_2: numeric" "OR loc_1 : list",
+                "OR loc_1 : np.ndarray",
+            )
         return ret
 
     def list_call(self, lon_lat_iter, **kwargs):
