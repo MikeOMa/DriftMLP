@@ -9,6 +9,8 @@ from driftmlp.drifter_indexing import driftiter, story
 from driftmlp.drifter_indexing.discrete_system import DefaultSystem
 from driftmlp.rotations import random_ll_rot
 
+import pkg_resources
+
 from .plotting.make_gpd import network_to_multipolygon_df
 
 _DRIFT_KWARGS = {
@@ -18,9 +20,9 @@ _DRIFT_KWARGS = {
 }
 
 
-def file_to_network(
+def driftfile_to_network(
     driftfile=None,
-    drift_kwargs=None,
+    drift_kwargs={},
     discretizer=DefaultSystem,
     day_cut_off=5,
     observations_per_day=4,
@@ -79,7 +81,7 @@ def file_to_network(
 
 def BootstrapNetwork(network: igraph.Graph, visual=False):
     assert "stories" in network.attributes(), ValueError(
-        "set store_story=True in file to network. Needed for bootstrap network"
+        "Set store_story=True in file to network. Needed for bootstrap network."
     )
     n_drift = len(network["stories"])
     boot_ids = np.random.randint(low=0, high=n_drift, size=n_drift, dtype=int).tolist()
@@ -123,13 +125,13 @@ def network_from_file(
         net = GraphML_Reader(fname, **kwargs)
     elif postfix == "h5":
         print("Creating network from drifter data")
-        net = file_to_network(fname, discretizer=discretizer, **kwargs)
-
+        net = driftfile_to_network(fname, discretizer=discretizer, **kwargs)
     elif postfix == "p":
         net = pickle.load(open(fname, "rb"))
     else:
         assert False, ValueError(f"{fname} not one of {valid_exts}.")
-    ##If rotation is not in the attributes, assume it is identity (no rotation)
+
+    #If rotation is not in the attributes, assume it is identity (no rotation)
     if "rotation" not in net.attributes():
         net["rotation"] = random_ll_rot(identity=True)
     if "gpd" not in net.attributes() and visual:
@@ -137,3 +139,13 @@ def network_from_file(
     return net
 
 
+def read_default_network():
+    """
+
+    Returns
+    -------
+        A sample network which included within the package. This network was created with both drogued and undrogued drifters.
+    """
+    net_file = pkg_resources.resource_filename('driftmlp', 'data/transition_both.GraphML')
+    network = network_from_file(net_file)
+    return network
