@@ -1,6 +1,5 @@
 # File: .readthedocs.yaml
-
-version: 1
+version: 2
 
 # Build from the docs/ directory with Sphinx
 sphinx:
