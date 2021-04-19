@@ -68,6 +68,25 @@ class random_ll_rot:
         else:
             self.rot = random_rot_xyz_quat()
 
+    def __getstate__(self):
+        """
+        Function to allow pickling of random_ll_rot
+
+        Returns
+        -------
+        the rotations rotation matrix
+        """
+        return self.rot.as_matrix()
+
+    def __setstate__(self, state):
+        """
+        Re initializes the rotation class.
+        Parameters
+        ----------
+        state: rotation matrix
+        """
+        self.rot = R.from_matrix(state)
+
     def __call__(self, loc_1, loc_2=None, **kwargs):
         if loc_2 is not None:
             x, y, z = ll_to_xyz(loc_1, loc_2)
