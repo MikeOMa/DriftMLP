@@ -126,9 +126,13 @@ def check_path(path: List, src: int, dest: int):
 
 
 class network_path:
+    """
+    Data structure to store information relating to a pathway
+    """
     def __init__(self, network, src, dest, path=None, **kwargs):
         self.src = src
         self.dest = dest
+
         try:
             self.src_net = network.vs(name=src)[0].index
         except IndexError:
@@ -141,6 +145,7 @@ class network_path:
 
         self.day_cut_off = network["day_cut_off"]
         if self.dest_net == -1 or self.src_net == -1:
+            # If the destination node or source node are not in the network.
             self.all_sps = [np.nan]
             self.nid = [np.nan]
         elif path is None:

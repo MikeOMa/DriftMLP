@@ -91,7 +91,8 @@ def BootstrapNetwork(network: igraph.Graph, visual=False):
         day_cut_off=network["day_cut_off"],
         observations_per_day=network["observations_per_day"],
     )
-    boot_net["rotation"] = network["rotation"]
+    if "rotation" in network.attributes():
+        boot_net["rotation"] = network["rotation"]
     if "gpd" in network.attributes() and visual:
         boot_net["gpd"] = network["gpd"]
     return boot_net

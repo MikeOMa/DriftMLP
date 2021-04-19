@@ -1,6 +1,6 @@
 import numpy as np
 
-from driftmlp import file_to_network
+from driftmlp import driftfile_to_network
 
 
 def drift_gen():
@@ -9,9 +9,9 @@ def drift_gen():
         lat = np.linspace(-60, 60, 300)
         pos = np.vstack([lon, lat]).T
 
-        yield {'position': pos}
+        yield {"position": pos}
 
 
 def test_network_creation():
-    net = file_to_network(data_iterable=drift_gen())
+    net = driftfile_to_network(data_iterable=drift_gen())
     return net

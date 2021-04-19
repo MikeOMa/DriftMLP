@@ -41,10 +41,10 @@ def gpd_extents(h3_gpd):
 
 def default_figure(fig=None) -> Tuple[plt.figure, plt.axes]:
     """
-
+    Returns a figure, Geoaxes pair. The subplot has a associated cartopy projection.
     Parameters
     ----------
-    fig : object
+    fig : matplotlib figure, useful to control the figsize in particular
     """
     if fig is None:
         fig = plt.figure()

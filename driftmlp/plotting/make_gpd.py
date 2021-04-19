@@ -48,7 +48,7 @@ def list_to_multipolygon_df(list_of_inds, discretizer=DefaultSystem, split=True)
     # h3_poly_lon_lat = [Polygon([a[::-1] for a in poly]) for poly in polys]
     geo_df = gpd.GeoDataFrame({"geometry": polys}, crs="EPSG:4326", index=unique_h3)
     ##the normal.centroid shapely will not work to give the same as h3.h3_to_geo
-    geo_df.to_crs(crs="EPSG:4326")
+    geo_df = geo_df.to_crs(crs="EPSG:4326")
     if hasattr(discretizer, "ind_to_geo"):
         geo_df["centroid_col"] = [
             Point(discretizer.ind_to_geo(hexa)) for hexa in unique_h3
