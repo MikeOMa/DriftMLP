@@ -2,45 +2,37 @@
 This package contains tools for implementing the methodology associated with the paper [Estimating the travel time and the most likely path from Lagrangian drifters](https://arxiv.org/abs/2002.07774)
 Code to reproduce figures from paper, hence a sample use of this package can be found at [Github link to paper figure reproduction code.](https://github.com/MikeOMa/MLTravelTimesFigures)
 
-## Setup
-### Installation
+### Documentation 
+The Documentation can be found @ https://driftmlp.readthedocs.io/ 
 
-To install the package first install numpy and proj (`conda install proj numpy` if using conda)
-Then pip this github page:
+### Interactive Web Application
 
-`pip install git+https://github.com/MikeOMa/DriftMLP`
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MikeOMa/DriftMLP_Interactive_Notebook.git/HEAD?filepath=interactive.ipynb)
 
-### Data preprocessing
-This package strongly depends on a hdf5 file which contains all the relevant drifter data.
-Therefore, prior to running any analysis the following steps must be carried out:
- 
-1. Download all files from https://www.aoml.noaa.gov/phod/gdp/interpolated/data/all.php. Save the larger files in a folder called 'raw_data'. Save all the metadata files in a folded called 'metadata'
+### Minimal Example
+The below example produces an estimate of the pathway and travel time of going between `from_loc` and `to_loc`. 
 
-2. the following 5 lines of code must be run, in the directory containing the two above folders.
+```angular2html
+import driftmlp
 
+T_mat = driftmlp.load_default_network()
+from_loc = [-90.90, 23.88]
+to_loc = [-9.88, 35.80] 
+SP = driftmlp.shortest_path.SingleSP(T_mat, from_loc, to_loc)
+display(SP)
+SP.plot_folium()
 ```
-import h5py 
-import DriftMLP.drifter_indexing.makehdf5
-ff  = h5py.File('drift.h5', 'w')
-makehdf5.makeHDF5(ff) 
-ff.close() 
-```
-
-
 ### General usage
 The package has 2 main usage components
 
-- `DriftMLP.file_to_network` will form the network from the hdf5 file above which is the most computationally intensive part
-- `DriftMLP.shortest_path` contains functions which require a network to run.
+- `DriftMLP.driftfile_to_network` will form the network from the hdf5 file above which is the most computationally intensive part
+- `DriftMLP.shortest_path` module contains functions which require a network to run.
     - `SingleSP` is sufficient for most usage. It will take the network and a pair of locations and results in a class containing both the path there and back. The travel time of this path may be accessed via the .sp.travel_time attribute. Has methods `.plot_cartopy` and `.plot_folium` for convince. 
     - `network_path` is a more customizable class which can be used for manual adaptations. It takes in two h3 indices and stores the path going from the first to the second. Stores travel path in network indices (`.nid`), spatial discretization indices (`.h3id`) and travel time in days (`.travel_time`).
 - `DriftMLP.rotations` contains functionality to generate random rotations. See paper for further details. This has two options one method by ARVO and one by shoemake. The Shoemake quaternion approach is advised.
 - `DriftMLP.plotting` Various functions for h3 index sequence plotting. Two backends are there on using folium, one using cartopy. Folium is easier to view and scroll around with. Cartopy/Matplotlib are far more customizable and can produce publication ready graphics.
 
+# TODO
 
-#TODO
-
-- Document all functions alongside typehints.
 - Publish to pip/ conda-forge.
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MikeOMa/DriftMLP_Interactive_Notebook.git/HEAD?filepath=interactive.ipynb)
