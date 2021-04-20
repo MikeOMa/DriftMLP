@@ -6,8 +6,8 @@ Installation
 This package can currently only be installed from github. Prior to installation you must have cartopy installed.
 
 .. code-block:: shell
-    pip install git+https://github.com/MikeOMa/DriftMLP
 
+    pip install git+https://github.com/MikeOMa/DriftMLP
 
 (Optional) Setting up the Data
 ******************************
@@ -78,5 +78,3 @@ See the paper :cite:p:`o2020estimating` for the sensitivity analyses conducted o
     discretizer = driftmlp.drifer_indexing.discrete_system.h3_default(res=3)
     T_mat = driftmlp.driftfile_to_network(data_iterable = iterable, observations_per_day=4, day_cut_off=5, discretizer=discretizer)
 
-
-.. bibliography::
