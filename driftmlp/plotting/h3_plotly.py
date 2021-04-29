@@ -34,7 +34,7 @@ def visualize_hexagons(hexagons, color="red", folium_map=None, weight=8, fix=Tru
     if folium_map is None:
         m = folium.Map(
             location=[sum(lat) / len(lat), sum(lng) / len(lng)],
-            zoom_start=3,
+            zoom_start=1,
             tiles="cartodbpositron",
         )
     else:

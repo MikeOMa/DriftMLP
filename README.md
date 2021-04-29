@@ -7,7 +7,7 @@ The Documentation can be found @ https://driftmlp.readthedocs.io/
 
 ### Interactive Web Application
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/binder-examples/appmode/master?urlpath=apps%2Findex.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MikeOMa/DriftMLP_Interactive_Notebook/main?urlpath=apps%2Finteractive.ipynb)
 
 ### Minimal Example
 The below example produces an estimate of the pathway and travel time of going between `from_loc` and `to_loc`. 
