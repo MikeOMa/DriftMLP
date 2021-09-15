@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="driftmlp",
     distname="driftmlp",
-    version="1.1",
+    version="1.2",
     author="Mike O'Malley",
     author_email="m.omalley2@lancaster.ac.uk",
     install_requires=[
@@ -22,7 +22,6 @@ setuptools.setup(
         "matplotlib",
         "numba",
     ],
-    package_dir={'driftmlp': 'driftmlp'},
     package_data={'driftmlp': ['data/*.GraphML']},
     description="A set of tools for data extraction from the GDP database and estimating travel times",
     long_description=long_description,
