@@ -120,7 +120,7 @@ def GraphML_Reader(fname, process_edgename=True, **kwargs):
 def network_from_file(
     fname, visual=True, discretizer=DefaultSystem, **kwargs
 ) -> igraph.Graph:
-    name, postfix = fname.split(".")
+    name, postfix = fname.rsplit(".", 1)
     valid_exts = ["h5", "GraphML", ".p", ".pickle"]
     if postfix == "GraphML":
         net = GraphML_Reader(fname, **kwargs)
