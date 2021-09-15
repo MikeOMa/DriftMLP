@@ -5,11 +5,12 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="driftmlp",
+    distname="driftmlp",
     version="1.0",
     author="Mike O'Malley",
     author_email="m.omalley2@lancaster.ac.uk",
     install_requires=[
-        "numpy>=1.17.2",
+        "numpy>=1.17.2,<=1.20",
         "cartopy>=0.17",
         "h3>=3.6.4",
         "scipy>=1.3.1",
