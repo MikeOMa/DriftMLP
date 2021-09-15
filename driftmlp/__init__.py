@@ -1,3 +1,5 @@
+__version__ = "1.01"
+
 import pickle
 import warnings
 
@@ -12,6 +14,7 @@ from driftmlp.rotations import random_ll_rot
 import pkg_resources
 
 from .plotting.make_gpd import network_to_multipolygon_df
+
 
 _DRIFT_KWARGS = {
     "variables": ["position", "drogue", "datetime"],
