@@ -15,7 +15,7 @@ The below example produces an estimate of the pathway and travel time of going b
 ```angular2html
 import driftmlp
 
-T_mat = driftmlp.load_default_network()
+T_mat = driftmlp.read_default_network()
 from_loc = [-90.90, 23.88]
 to_loc = [-9.88, 35.80] 
 SP = driftmlp.shortest_path.SingleSP(T_mat, from_loc, to_loc)
