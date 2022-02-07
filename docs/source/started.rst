@@ -3,23 +3,26 @@ Getting Started
 
 Installation
 ************
-This package can currently only be installed from github. Prior to installation you must have cartopy installed.
+This package can currently only be installed from github or pip. Often the installion goes smoother if cartopy is installed beforehand.
+
 
 .. code-block:: shell
 
+    pip install driftmlp
+    # OR
     pip install git+https://github.com/MikeOMa/DriftMLP
 
 (Optional) Setting up the Data
 ******************************
 
-This section is optional as we do provide a default transition matrix within the package. However, if you would like an
+This section is optional as we do provide a default transition matrix within the package for base usage. However, if you would like an
 up to date transition matrix you can follow this section to recreate the transition matrix.
 
-This section is also required if one your aims are to estimate grid uncertainty using rotations or if you want to uncertainty using bootstrap.
+This section is also required if one your aims are to estimate grid uncertainty using rotations or if you want to estimate uncertainty using bootstrap.
 Both of these functionalities greatly increase the robustness of the results; therefore it is the advised use of this package.
 
-Alternatively if one wishes to use this package for an alternative data source, all that is required is an iterable of longitude-latitude pairs.
-An example of this is given at the end of this page.
+Alternatively, if one wishes to use this package for an alternative data source, all that is required is an iterable of longitude-latitude pairs.
+An example of such a use is given at the end of this page.
 
 (Optional) Collecting the drifter data
 ======================================
@@ -28,12 +31,12 @@ The method relies on an estimate of a transition matrix from a very large collec
 data into a format which is friendly with this package.
 
 In summary the package requires an iterable which returns a dictionary. The dictionary should have an entry ['position'] which
-holds positions at equally spaced time intervals $\mathcal{T}_L$.
+holds positions at equally spaced time intervals by default the package assumes this is 6 hourly.
 
 Here's an example where we use the drifter trajectories.
 We run the following from a folder where the `Global Drifter Program <https://www.aoml.noaa.gov/phod/gdp/interpolated/data/all.php>`_
 data is stored. By default all metadata (files named drifl_1_5000.dat) should be in a folder called *metadata*.
-All trajectory data (files named buoydata_1_5000.csv) should be in a folder  called *raw_data*
+All trajectory data (files named buoydata_1_5000.csv) should be in a folder  called *raw_data*.
 
 .. code-block:: python
 
