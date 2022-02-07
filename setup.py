@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="driftmlp",
     distname="driftmlp",
-    version="1.2",
+    version="1.3",
     author="Mike O'Malley",
     author_email="m.omalley2@lancaster.ac.uk",
     install_requires=[

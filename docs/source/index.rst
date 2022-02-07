@@ -2,7 +2,7 @@
 Welcome to DriftMLP's documentation!
 ====================================
 
-**DriftMLP** is a pacakage which gives a measure
+**driftmlp** is a pacakage which gives a measure
 of separation which represents the ocean currents. The intended use of the package uses the global drifter program data :cite:p:`GDP`.
 The package can be used with other datasets; however the default parameters will need to be carefully tested.
 
@@ -13,7 +13,7 @@ Our intended uses of the package are:
 
 - Use as a better measure of separation than geodesic distance when analysing ocean-borne species.
 
-- A method to extract a transitition matrix from the drifter data.
+- A method to extract a transitition matrix from the global drifter program data.
 
 - Exploratory analysis of ocean currents.
 
@@ -28,8 +28,8 @@ read the paper to see exactly what transition matrix is created.
     :maxdepth: 1
     :caption: Installation:
 
-    started <started.rst>
-    help <help.rst>
+    Started <started.rst>
+    Help <help.rst>
 
 .. toctree::
     :maxdepth: 1

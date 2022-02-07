@@ -1,0 +1,8 @@
+/.idea/
+/build/lib/driftmlp/
+/dist/
+/docs/build/html/
+/docs/build/latex/
+/docs/build/doctrees/
+/driftmlp.egg-info/
+/examples/.ipynb_checkpoints/

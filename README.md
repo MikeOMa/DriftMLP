@@ -33,7 +33,3 @@ The package has 2 main usage components
 - `DriftMLP.rotations` contains functionality to generate random rotations. See paper for further details. This has two options one method by ARVO and one by shoemake. The Shoemake quaternion approach is advised.
 - `DriftMLP.plotting` Various functions for h3 index sequence plotting. Two backends are there on using folium, one using cartopy. Folium is easier to view and scroll around with. Cartopy/Matplotlib are far more customizable and can produce publication ready graphics.
 
-# TODO
-
-- Publish to pip/ conda-forge.
-
